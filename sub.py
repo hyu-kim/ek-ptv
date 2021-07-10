@@ -81,7 +81,7 @@ def trshow(tr, first_style='bo', last_style='gs', style='b.'):
     plt.xlabel('x')
     plt.ylabel('y')
 
-def estvel(i, rate=0.1):
+def est_vel(i, rate=0.1):
     """
     Estimates vetical velocity based on frame number.
     Assumes 0.14 s/frame
@@ -98,5 +98,10 @@ def estvel(i, rate=0.1):
     v : float
         estimating velocity [px/frame].
     """
-    v = (i>70)*rate*(i-71)
+    v = (i>70)*rate*(i-71);
     return v
+
+@tp.predict.predictor
+def predict(i, particle):
+    velocity = np.array((0, est_vel(i)))
+    return particle.pos + velocity * (i - particle.t)
