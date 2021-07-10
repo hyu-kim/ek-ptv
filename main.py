@@ -13,7 +13,7 @@ import matplotlib.pyplot as plt
 import numpy as np
 import pandas as pd
 from pandas import DataFrame, Series  # for convenience
-from sub import trans_contrast
+from sub import trans_contrast, trshow
 import pims
 import trackpy as tp
 import time
@@ -34,8 +34,8 @@ i = 49;
 print("Line 34");
 
 t1 = time.time();
-# f = tp.locate(frame[i], diam, invert=False, topn=20);
-f = tp.batch(frame, diam, topn=20);
+# f0 = tp.locate(frame[i], diam, invert=False, topn=20);
+f = tp.batch(frame[:10], diam, topn=20);
 tp.quiet()
 t2 = time.time();
 tp.annotate(f, frame[i])

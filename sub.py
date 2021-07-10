@@ -11,6 +11,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 import pims
 import pandas as pd
+import trackpy as tp
 @pims.pipeline
 
 def trans_contrast(frame, q1=0.3, q2=0.995):
@@ -73,8 +74,27 @@ def trshow(tr, first_style='bo', last_style='gs', style='b.'):
             sty = last_style
         else:
             sty = style
-        plot(pts.x, pts.y, sty)
-    trackpy.plot_traj(tr, colorby='frame', ax=gca())
-    axis('equal'); ylim(ymin=-1.0, ymax=3.5)
-    xlabel('x')
-    ylabel('y')    
+        plt.plot(pts.x, pts.y, sty)
+    tp.plot_traj(tr, colorby='frame')
+    plt.axis('equal'); 
+    # ylim(ymin=-1.0, ymax=3.5)
+    plt.xlabel('x')
+    plt.ylabel('y')
+
+def estvel(i, rate=0.1):
+    """
+    Estimates vetical velocity based on frame number.
+    Assumes 0.14 s/frame
+
+    Parameters
+    ----------
+    i : integer
+        frame number.
+
+    Returns
+    -------
+    v : float
+        estimating velocity [px/frame].
+    """
+    
+    return v
