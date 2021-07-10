@@ -90,11 +90,13 @@ def estvel(i, rate=0.1):
     ----------
     i : integer
         frame number.
+    rate : float
+           Rate of velocity increase [px/frame].
 
     Returns
     -------
     v : float
         estimating velocity [px/frame].
     """
-    
+    v = (i>70)*rate*(i-71)
     return v
