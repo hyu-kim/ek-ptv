@@ -47,7 +47,7 @@ def trans_contrast(frame, q1=0.3, q2=0.995):
         frame[i] = temp.astype(np.uint16);
     return frame
 
-def pile():
+def pile(frame, diam, topn):
     """
     same as the function batch. Designed to work faster
     
@@ -62,7 +62,11 @@ def pile():
     DataFrame([x, y, mass, size, ecc, signal])
 
     """
-    return 0
+    f = tp.locate(frame[0], diam, invert=False, topn=topn);
+    for i in range(len(frame)-1):
+        f_tmp = tp.locate(frame[i], diam, invert=False, topn=topn);
+        f = pd.concat(f, f_tmp);
+    return f
 
 def trshow(tr, first_style='bo', last_style='gs', style='b.'):
     frames = list(tr.groupby('frame'))
@@ -74,14 +78,14 @@ def trshow(tr, first_style='bo', last_style='gs', style='b.'):
             sty = last_style
         else:
             sty = style
-        plt.plot(pts.x, pts.y, sty)
+        plt.plot(pts.x, pts.y, sty, markersize=2)
     tp.plot_traj(tr, colorby='frame')
-    plt.axis('equal'); 
+    # plt.axis('equal'); 
     # ylim(ymin=-1.0, ymax=3.5)
     plt.xlabel('x')
     plt.ylabel('y')
 
-def est_vel(i, rate=0.1):
+def est_vel(i, rate=0.15):
     """
     Estimates vetical velocity based on frame number.
     Assumes 0.14 s/frame

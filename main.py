@@ -13,7 +13,7 @@ import matplotlib.pyplot as plt
 import numpy as np
 import pandas as pd
 from pandas import DataFrame, Series  # for convenience
-from sub import trans_contrast, trshow, est_vel, predict
+from sub import trans_contrast, trshow, est_vel, predict, pile
 import pims
 import trackpy as tp
 import time
@@ -30,16 +30,19 @@ frame = pims.open('%s.tif' % s);
 frame = trans_contrast(frame, q1=0.7, q2=1-1e-3)
 
 diam = 35;
-i = 300;
-print("Line 34");
+i = 350;
 
 t1 = time.time();
 f0 = tp.locate(frame[i], diam, invert=False, topn=25);
 f1 = tp.locate(frame[i+1], diam, invert=False, topn=25);
-# f = tp.batch(frame[:10], diam, topn=20);
+# f = pile(frame, diam, topn=25);
 # tp.quiet()
 t2 = time.time();
 # tp.annotate(f, frame[i])
 print("elapsed : %s sec" % (t2-t1));
 
-tr = pd.concat(tp.link_df_iter((f0, f1), search_range=))
+pred = tp.predict.NearestVelocityPredict()
+tr = pd.concat(pred.link_df_iter((f0, f1), search_range=40))
+# tr = pd.concat(tp.link_df_iter((f0, f1), search_range=est_vel(i)))
+# tr = tp.link(f, est_vel());
+trshow(tr)
