@@ -11,6 +11,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 import pims
 import pandas as pd
+import copy
 import trackpy as tp
 @pims.pipeline
 
@@ -29,23 +30,24 @@ def trans_contrast(frame, q1=0.3, q2=0.995):
 
     Returns
     -------
-    frame : image sequende with a higher contrast
+    frame2 : image sequende with a higher contrast
 
     """
+    frame2 = copy.deepcopy(frame);
     m = round(len(frame)/2);
     x = np.reshape(frame[m],(1,-1))[0];
     a,b,c = plt.hist(x,bins=255,density=True,range=(0,255),histtype='step',cumulative=True);
     thre1 = np.where(a<q1)[0][-1];
     sz2 = len(np.where(a>=q2)[0]);
-    thre2 = np.where(a>=q2)[0][round(sz2*0.9)]
+    thre2 = np.where(a>=q2)[0][round(sz2*0.9)];
     
     for i in range(len(frame)):
-        frame[i][frame[i]<thre1] = thre1;
-        frame[i][frame[i]>thre2] = thre2;
-        temp = (frame[i] - thre1) / (thre2 - thre1) * 255;
+        frame2[i][frame[i]<thre1] = thre1;
+        frame2[i][frame[i]>thre2] = thre2;
+        temp = (frame2[i] - thre1) / (thre2 - thre1) * 255;
         temp = np.around(temp);
-        frame[i] = temp.astype(np.uint16);
-    return frame
+        frame2[i] = temp.astype(np.uint16);
+    return frame2
 
 def pile(frame, diam, topn):
     """
@@ -64,8 +66,8 @@ def pile(frame, diam, topn):
     """
     f = tp.locate(frame[0], diam, invert=False, topn=topn);
     for i in range(len(frame)-1):
-        f_tmp = tp.locate(frame[i], diam, invert=False, topn=topn);
-        f = pd.concat(f, f_tmp);
+        f_tmp = tp.locate(frame[i+1], diam, invert=False, topn=topn);
+        f = pd.concat([f, f_tmp]);
     return f
 
 def trshow(tr, first_style='bo', last_style='gs', style='b.'):
