@@ -65,9 +65,11 @@ def pile(frame, diam, topn):
 
     """
     f = tp.locate(frame[0], diam, invert=False, topn=topn);
+    f_tup = (f,);
     for i in range(len(frame)-1):
         f_tmp = tp.locate(frame[i+1], diam, invert=False, topn=topn);
-        f = pd.concat([f, f_tmp]);
+        # f = pd.concat([f, f_tmp]);
+        f_tup = f_tup + (f_tmp,);
     return f
 
 def trshow(tr, first_style='bo', last_style='gs', style='b.'):

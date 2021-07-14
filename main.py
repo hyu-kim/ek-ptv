@@ -33,8 +33,8 @@ diam = 35;
 i = 350;
 
 t1 = time.time();
-# f0 = tp.locate(frame[i], diam, invert=False, topn=25);
-# f1 = tp.locate(frame[i+1], diam, invert=False, topn=25);
+f0 = tp.locate(frame[i], diam, invert=False, topn=25);
+f1 = tp.locate(frame[i+1], diam, invert=False, topn=25);
 f = pile(frame, diam, topn=25);
 # tp.quiet()
 t2 = time.time();
@@ -44,5 +44,8 @@ print("elapsed : %s sec" % (t2-t1));
 pred = tp.predict.NearestVelocityPredict()
 # tr = pd.concat(pred.link_df_iter((f0, f1), search_range=40))
 # tr = pd.concat(tp.link_df_iter((f0, f1), search_range=est_vel(i)))
+# tr = pd.concat(pred.link_df_iter(f, search_range=40))
 tr = tp.link(f, 50);
 trshow(tr)
+tr2 = pd.concat(pred.link_df_iter((f[100:125], f[125:150]), search_range=40));
+tr3 = pd.concat(pred.link_df_iter((f[100:125], f[125:150], f[150:175]), search_range=40));
