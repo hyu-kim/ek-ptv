@@ -13,13 +13,13 @@ import matplotlib.pyplot as plt
 import numpy as np
 import pandas as pd
 from pandas import DataFrame, Series  # for convenience
-from sub import trans_contrast, trshow, est_vel, predict, pile
+from sub import trans_contrast, trshow, pile
 import pims
 import trackpy as tp
 import time
 
 # Optionally, tweak styles.
-mpl.rc('figure',  figsize=(10, 5))
+mpl.rc('figure',  figsize=(5, 10))
 mpl.rc('image', cmap='gray')
 
 # os.chdir('/Volumes/LEMI_HK/LLNL BioSFA/EK/2021-04-25/tiff')
@@ -44,8 +44,8 @@ print("elapsed : %s sec" % (t2-t1));
 pred = tp.predict.NearestVelocityPredict()
 # tr = pd.concat(pred.link_df_iter((f0, f1), search_range=40))
 # tr = pd.concat(tp.link_df_iter((f0, f1), search_range=est_vel(i)))
-# tr = pd.concat(pred.link_df_iter(f, search_range=40))
-tr = tp.link(f, 50);
+tr = pd.concat(pred.link_df_iter(f, search_range=40))
+# tr = tp.link(f, 50);
 trshow(tr)
-tr2 = pd.concat(pred.link_df_iter((f[100:125], f[125:150]), search_range=40));
-tr3 = pd.concat(pred.link_df_iter((f[100:125], f[125:150], f[150:175]), search_range=40));
+# tr2 = pd.concat(pred.link_df_iter((f[100:125], f[125:150]), search_range=40));
+# tr3 = pd.concat(pred.link_df_iter((f[100:125], f[125:150], f[150:175]), search_range=40));

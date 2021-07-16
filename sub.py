@@ -13,8 +13,8 @@ import pims
 import pandas as pd
 import copy
 import trackpy as tp
-@pims.pipeline
 
+@pims.pipeline
 def trans_contrast(frame, q1=0.3, q2=0.995):
     """
     Transforms a sequence of image to have a higher constrast
@@ -61,7 +61,7 @@ def pile(frame, diam, topn):
 
     Returns
     -------
-    DataFrame([x, y, mass, size, ecc, signal])
+    tupule of frames
 
     """
     f = tp.locate(frame[0], diam, invert=False, topn=topn);
@@ -70,7 +70,7 @@ def pile(frame, diam, topn):
         f_tmp = tp.locate(frame[i+1], diam, invert=False, topn=topn);
         # f = pd.concat([f, f_tmp]);
         f_tup = f_tup + (f_tmp,);
-    return f
+    return f_tup
 
 def trshow(tr, first_style='bo', last_style='gs', style='b.'):
     frames = list(tr.groupby('frame'))
@@ -113,3 +113,24 @@ def est_vel(i, rate=0.15):
 def predict(i, particle):
     velocity = np.array((0, est_vel(i)))
     return particle.pos + velocity * (i - particle.t)
+
+def filter_ephemeral(tr, thres=9):
+    """
+    Removes traces appearing at no more than specific number of frames
+
+    Parameters
+    ----------
+    tr : Dataframe
+        trace matrix size of (topn * no. frames, 10).
+    thres : Integer
+        maximum number of frames to filter.
+
+    Returns
+    -------
+    tr2 : Dataframe
+        Filtered trace dataframe
+    """
+    tr_particle = tr.loc[:,'particle'];
+    tr2 = pd.concat([tr.loc[(tr.loc[:,'particle']==i) & (len(tr.loc[tr_particle==i])>thres)] \
+                     for i in range(max(tr_particle))]);
+    return tr2
