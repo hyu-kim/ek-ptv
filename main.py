@@ -50,7 +50,7 @@ trshow(tr[5000:7000]);
 # tr2 = pd.concat(pred.link_df_iter((f[100:125], f[125:150]), search_range=40));
 # tr3 = pd.concat(pred.link_df_iter((f[100:125], f[125:150], f[150:175]), search_range=40));
 
-x_lo = 100;
-x_hi = 450;
-tr = tr[(tr['x'] < x_hi) & (tr['x'] > x_lo)];
+# x_lo = 100;
+# x_hi = 450;
+# tr = tr[(tr['x'] < x_hi) & (tr['x'] > x_lo)]; # not recommended to use
 tr = filter_ephemeral(tr);

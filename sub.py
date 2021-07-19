@@ -9,6 +9,7 @@ Created on Wed Jun 30 23:35:06 2021
 
 import numpy as np
 import matplotlib.pyplot as plt
+import matplotlib as mpl
 import pims
 import pandas as pd
 import copy
@@ -83,7 +84,7 @@ def trshow(tr, first_style='bo', last_style='gs', style='b.'):
         else:
             sty = style
         plt.plot(pts.x, pts.y, sty, markersize=2)
-    tp.plot_traj(tr, colorby='frame')
+    tp.plot_traj(tr, colorby='frame');
     plt.grid();
     # plt.axis('equal'); 
     # ylim(ymin=-1.0, ymax=3.5)
@@ -135,3 +136,38 @@ def filter_ephemeral(tr, thres=9):
     tr2 = pd.concat([tr.loc[(tr.loc[:,'particle']==i) & (len(tr.loc[tr_particle==i])>thres)] \
                      for i in range(max(tr_particle))]);
     return tr2
+
+def scatter_v(tr):
+    """
+    Plots scatter plot of trace dataframe. Generates a trace dataframe added with velocity
+
+    Parameters
+    ----------
+    tr : dataframe
+        trace.
+
+    Returns
+    -------
+    tr_v : dataframe
+        trace added with velocity
+
+    """
+    tr_v = tr.copy();
+    tr_v['v_x'] = tr['ep'];
+    tr_v['v_y'] = tr['ep'];
+    fr = 0;
+    i_prev = min(tr['particle'])-1;
+    for i in tr['particle']:
+        if i==i_prev:
+            ind1 = (tr['particle']==i)&(tr['frame']==fr);
+            fr = fr+1;
+            ind2 = (tr['particle']==i)&(tr['frame']==fr);
+            tr_v.loc[ind2, 'v_x'] = tr_v['x'][ind2].values[0] - tr_v['x'][ind1].values[0];
+            tr_v.loc[ind2, 'v_y'] = tr_v['y'][ind2].values[0] - tr_v['y'][ind1].values[0];
+        else:
+            fr = min(tr['frame'][tr['particle']==i]);
+        i_prev = i;
+    mpl.rc('figure',  figsize=(10, 10));
+    plt.plot(tr_v['v_x'], tr_v['v_y'], 'b.', markersize=2);
+    plt.grid();
+    return tr_v
