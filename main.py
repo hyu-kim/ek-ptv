@@ -13,7 +13,7 @@ import matplotlib.pyplot as plt
 import numpy as np
 import pandas as pd
 from pandas import DataFrame, Series  # for convenience
-from sub import trans_contrast, trshow, pile
+from sub import trans_contrast, trshow, pile, filter_ephemeral
 import pims
 import trackpy as tp
 import time
@@ -41,11 +41,16 @@ t2 = time.time();
 # tp.annotate(f, frame[i])
 print("elapsed : %s sec" % (t2-t1));
 
-pred = tp.predict.NearestVelocityPredict()
+pred = tp.predict.NearestVelocityPredict();
 # tr = pd.concat(pred.link_df_iter((f0, f1), search_range=40))
 # tr = pd.concat(tp.link_df_iter((f0, f1), search_range=est_vel(i)))
-tr = pd.concat(pred.link_df_iter(f, search_range=40))
+tr = pd.concat(pred.link_df_iter(f, search_range=40));
 # tr = tp.link(f, 50);
-trshow(tr)
+trshow(tr[5000:7000]);
 # tr2 = pd.concat(pred.link_df_iter((f[100:125], f[125:150]), search_range=40));
 # tr3 = pd.concat(pred.link_df_iter((f[100:125], f[125:150], f[150:175]), search_range=40));
+
+x_lo = 100;
+x_hi = 450;
+tr = tr[(tr['x'] < x_hi) & (tr['x'] > x_lo)];
+tr = filter_ephemeral(tr);

@@ -84,6 +84,7 @@ def trshow(tr, first_style='bo', last_style='gs', style='b.'):
             sty = style
         plt.plot(pts.x, pts.y, sty, markersize=2)
     tp.plot_traj(tr, colorby='frame')
+    plt.grid();
     # plt.axis('equal'); 
     # ylim(ymin=-1.0, ymax=3.5)
     plt.xlabel('x')
