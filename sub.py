@@ -171,3 +171,30 @@ def scatter_v(tr):
     plt.plot(tr_v['v_x'], tr_v['v_y'], 'b.', markersize=2);
     plt.grid();
     return tr_v
+
+def filter_v(tr_v, xlim=5, ylim1=5, ylim2=-35, direction=True):
+    """
+    Excludes velocity values out of bound
+
+    Parameters
+    ----------
+    tr_v : Dataframe
+        input trace+velocity matrix.
+    xlim : Float
+        upper and lower bounds of v_x
+    ylim1 : Float
+        upper bound of v_y
+    ylim2 : Float
+        lower bound of v_y
+    direction : Bool
+        True if velocity_y < 0, False else
+
+    Returns
+    -------
+    tr_v2 : dataframe, trace+velocity filtered
+
+    """
+    if not direction:
+        tr_v['v_y'] = -tr_v['v_y'];
+    tr_v2 = tr_v[(abs(tr_v['v_x'])<xlim) & (tr_v['v_y']<ylim1) & (tr_v['v_y']>ylim2)];
+    return tr_v2
