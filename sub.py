@@ -167,6 +167,7 @@ def scatter_v(tr):
         else:
             fr = min(tr['frame'][tr['particle']==i]);
         i_prev = i;
+    tr_v = tr_v[~np.isnan(tr_v['v_x'])];
     mpl.rc('figure',  figsize=(10, 10));
     plt.plot(tr_v['v_x'], tr_v['v_y'], 'b.', markersize=2);
     plt.grid();
@@ -242,9 +243,20 @@ def plot_v_quantile(tr_v, s):
     if s=='max':
         fn = max;
     elif s=='q1':
+        fn = lambda x: np.quantile(x, 0.25);
+    elif s=='mean':
+        fn = np.mean;
+    elif s=='q2':
         fn = lambda x: np.quantile(x, 0.5);
-        
-    for i in range(max(tr_v['frame'])):
+    else:
+        raise ValueError("try different statistic")
+    
+    n_fr = max(tr_v['frame']);
+    v = np.zeros(n_fr);
+    for i in range(n_fr):
         tr_vf = tr_v['v_y'][tr_v['frame']==i];
-        print("%s" % fn(tr_vf));
+        v[i] = fn(tr_vf);
         
+    mpl.rc('figure',  figsize=(10, 10));
+    plt.plot(range(n_fr), v, '-k', markersize=2);
+    plt.grid();
