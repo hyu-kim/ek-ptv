@@ -239,6 +239,12 @@ def plot_v_quantile(tr_v, s):
     None.
 
     """
+    if s=='max':
+        fn = max;
+    elif s=='q1':
+        fn = lambda x: np.quantile(x, 0.5);
+        
     for i in range(max(tr_v['frame'])):
-        tr_vf = tr_v[tr_v['frame']==i];
+        tr_vf = tr_v['v_y'][tr_v['frame']==i];
+        print("%s" % fn(tr_vf));
         

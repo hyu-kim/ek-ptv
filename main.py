@@ -13,7 +13,7 @@ import matplotlib.pyplot as plt
 import numpy as np
 import pandas as pd
 from pandas import DataFrame, Series  # for convenience
-from sub import trans_contrast, trshow, pile, filter_ephemeral, filter_v, scatter_v, distrib_v
+from sub import trans_contrast, trshow, pile, filter_ephemeral, filter_v, scatter_v, distrib_v, plot_v_quantile
 import pims
 import trackpy as tp
 import time
