@@ -25,8 +25,9 @@ mpl.rc('image', cmap='gray')
 # os.chdir('/Volumes/LEMI_HK/LLNL BioSFA/EK/2021-04-25/tiff')
 os.chdir('/Users/hk/Desktop/Research/SFA/Electrokinetics/trackpy')
 
-s = '+1R1_R1_Ch05_TxRed_10-60V_1Vps_10X_001.ome';
-frame = pims.open('%s_v2.tif' % s); #v2, adjusted with imageJ
+s = '+1R1_R1_Ch05_TxRed_10-60V_1Vps_10X_001';
+frame = pims.open('%s.ome_v2.tif' % s); #v2, adjusted with imageJ
+text = open('%s.txt' % s,'r');
 # frame2 = trans_contrast(frame, q1=0.7, q2=1-1e-3)
 
 diam = 35;
@@ -58,4 +59,4 @@ tr_v = scatter_v(tr);
 tr_v = filter_v(tr_v, xlim=3);
 plot_v_quantile(tr_v, 'q1')
 
-fps = 
+# fps = 

@@ -169,6 +169,7 @@ def scatter_v(tr):
         i_prev = i;
     tr_v = tr_v[~np.isnan(tr_v['v_x'])];
     mpl.rc('figure',  figsize=(10, 10));
+    plt.figure();
     plt.plot(tr_v['v_x'], tr_v['v_y'], 'b.', markersize=2);
     plt.grid();
     return tr_v
@@ -199,6 +200,7 @@ def filter_v(tr_v, xlim=5, ylim1=5, ylim2=-35, direction=True):
         tr_v['v_y'] = -tr_v['v_y'];
     tr_v2 = tr_v[(abs(tr_v['v_x'])<xlim) & (tr_v['v_y']<ylim1) & (tr_v['v_y']>ylim2)];
     mpl.rc('figure',  figsize=(10, 10));
+    plt.figure();
     plt.plot(tr_v2['v_x'], tr_v2['v_y'], 'b.', markersize=2);
     plt.grid();
     return tr_v2
@@ -221,6 +223,7 @@ def distrib_v(tr_v, fr):
     """
     tr_vf = tr_v[tr_v['frame']==fr];
     mpl.rc('figure',  figsize=(10, 10));
+    plt.figure();
     plt.plot(tr_vf['v_x'], tr_vf['v_y'], 'b.', markersize=2);
     plt.grid();
     
@@ -258,5 +261,6 @@ def plot_v_quantile(tr_v, s):
         v[i] = fn(tr_vf);
         
     mpl.rc('figure',  figsize=(10, 10));
+    plt.figure();
     plt.plot(range(n_fr), v, '-k', markersize=2);
     plt.grid();
