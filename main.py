@@ -55,4 +55,7 @@ trshow(tr[5000:7000]);
 # tr = tr[(tr['x'] < x_hi) & (tr['x'] > x_lo)]; # not recommended to use
 tr = filter_ephemeral(tr);
 tr_v = scatter_v(tr);
-tr_v2 = filter_v(tr_v, xlim=3);
+tr_v = filter_v(tr_v, xlim=3);
+plot_v_quantile(tr_v, 'q1')
+
+fps = 

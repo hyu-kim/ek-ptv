@@ -241,7 +241,7 @@ def plot_v_quantile(tr_v, s):
 
     """
     if s=='max':
-        fn = max;
+        fn = min;
     elif s=='q1':
         fn = lambda x: np.quantile(x, 0.25);
     elif s=='mean':
@@ -253,8 +253,8 @@ def plot_v_quantile(tr_v, s):
     
     n_fr = max(tr_v['frame']);
     v = np.zeros(n_fr);
-    for i in range(n_fr):
-        tr_vf = tr_v['v_y'][tr_v['frame']==i];
+    for i in range(n_fr-1):
+        tr_vf = tr_v['v_y'][tr_v['frame']==i+1];
         v[i] = fn(tr_vf);
         
     mpl.rc('figure',  figsize=(10, 10));
