@@ -240,7 +240,8 @@ def plot_v_quantile(tr_v, s):
 
     Returns
     -------
-    None.
+    v : Array
+        list of statistics of v_y by each frame
 
     """
     if s=='max':
@@ -264,3 +265,32 @@ def plot_v_quantile(tr_v, s):
     plt.figure();
     plt.plot(range(n_fr), v, '-k', markersize=2);
     plt.grid();
+    return v
+
+def conv_vy(v, front, back, rate_time=0.138, rate_space=0.0644):
+    """
+    Trims starting / ending frames. Converts units in time / space
+
+    Parameters
+    ----------
+    v : array
+        list of v_y statistics per frame
+    front : numeric
+        initial frame number to include.
+    back : numeric
+        last frame number to include.
+    rate_time : float
+        conversion from frame to sec.
+    rate_space : float
+        conversion from px to um.
+
+    Returns
+    -------
+    v2 : array
+        converted v_y.
+
+    """
+    v = v[front:back+1] * rate_space;
+    t = np.array(range(len(v))) * rate_time;
+    v2 = np.hstack((np.transpose([t]), -np.transpose([v])));
+    return v2

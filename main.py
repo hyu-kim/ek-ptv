@@ -13,7 +13,8 @@ import matplotlib.pyplot as plt
 import numpy as np
 import pandas as pd
 from pandas import DataFrame, Series  # for convenience
-from sub import trans_contrast, trshow, pile, filter_ephemeral, filter_v, scatter_v, distrib_v, plot_v_quantile
+from sub import trshow, pile, filter_ephemeral, filter_v, \
+    scatter_v, distrib_v, plot_v_quantile, conv_vy
 import pims
 import trackpy as tp
 import time
@@ -57,6 +58,7 @@ trshow(tr[5000:7000]);
 tr = filter_ephemeral(tr);
 tr_v = scatter_v(tr);
 tr_v = filter_v(tr_v, xlim=3);
-plot_v_quantile(tr_v, 'q1')
+v = plot_v_quantile(tr_v, 'q1');
+v2 = conv_vy(v, front=100, back=299);
 
 # fps = 
