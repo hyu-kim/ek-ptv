@@ -13,9 +13,7 @@ import matplotlib.pyplot as plt
 import numpy as np
 import pandas as pd
 from pandas import DataFrame, Series  # for convenience
-from sub import trshow, pile, filter_ephemeral, filter_v, \
-    scatter_v, distrib_v, plot_v_quantile, conv_vy
-import pims
+import sub, pims
 import trackpy as tp
 import time
 
@@ -37,7 +35,7 @@ i = 350;
 t1 = time.time();
 f0 = tp.locate(frame[i], diam, invert=False, topn=25);
 f1 = tp.locate(frame[i+1], diam, invert=False, topn=25);
-f = pile(frame, diam, topn=25);
+f = sub.pile(frame, diam, topn=25);
 # tp.quiet()
 t2 = time.time();
 # tp.annotate(f, frame[i])
@@ -48,17 +46,17 @@ pred = tp.predict.NearestVelocityPredict();
 # tr = pd.concat(tp.link_df_iter((f0, f1), search_range=est_vel(i)))
 tr = pd.concat(pred.link_df_iter(f, search_range=40));
 # tr = tp.link(f, 50);
-trshow(tr[5000:7000]);
+sub.trshow(tr[5000:7000]);
 # tr2 = pd.concat(pred.link_df_iter((f[100:125], f[125:150]), search_range=40));
 # tr3 = pd.concat(pred.link_df_iter((f[100:125], f[125:150], f[150:175]), search_range=40));
 
 # x_lo = 100;
 # x_hi = 450;
 # tr = tr[(tr['x'] < x_hi) & (tr['x'] > x_lo)]; # not recommended to use
-tr = filter_ephemeral(tr);
-tr_v = scatter_v(tr);
-tr_v = filter_v(tr_v, xlim=3);
-v = plot_v_quantile(tr_v, 'q1');
-v2 = conv_vy(v, front=100, back=299);
+tr = sub.filter_ephemeral(tr);
+tr_v = sub.scatter_v(tr);
+tr_v = sub.filter_v(tr_v, xlim=3);
+v = sub.plot_v_quantile(tr_v, 'q1');
+v2 = sub.conv_vy(v, front=100, back=299);
 
 # fps = 
