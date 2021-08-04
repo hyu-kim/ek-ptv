@@ -290,7 +290,7 @@ def convert_vy(v, front, back, rate_time=0.138, rate_space=0.0644):
         converted v_y.
 
     """
-    v = v[front:back+1] * rate_space;
+    v = v[front:back+1] * rate_space / rate_time;
     t = np.array(range(len(v))) * rate_time;
     v2 = np.hstack((np.transpose([t]), -np.transpose([v])));
     return v2
@@ -301,11 +301,22 @@ def calc_param(v2):
     
     """
     # constants
-    eps_r = 80; # relative permitivity
-    eps_0 = 8.854e-12; # vacuum permitivity
-    eta = 8.66e-4; # viscosity
-    l = 10e-3; # channel length
+    eps_r = 80; # relative permitivity []
+    eps_0 = 8.854e-12; # vacuum permitivity [F/m]
+    eta = 8.66e-4; # viscosity [Pa-s]
+    l = 10e-3; # channel length [m]
     
-    coef = np.polyfit(v2[:,0], v2[:,1], 1) # [0,] µm / V
-    # mu = 
-    # return mu, zeta
+    coef = np.polyfit(v2[:,0], v2[:,1], 1) # [0,] µm / V-s
+    mu = coef[0] * l * 1e-6;
+    zeta = mu * eta / (eps_r * eps_0)
+    return mu, zeta
+
+def plot_v2(v2, path = None, plotinfo = None):
+    mpl.rc('figure',  figsize=(10, 10));
+    plt.rc('font', size=16)
+    plt.figure();
+    plt.plot(v2[:,0], v2[:,1], '.k', markersize=5);
+    # plt.grid();
+    if path is not None:
+        path = path + '/' + plotinfo
+        plt.savefig(path)
