@@ -12,26 +12,26 @@ import matplotlib as mpl
 import matplotlib.pyplot as plt
 import numpy as np
 import pandas as pd
-from pandas import DataFrame, Series  # for convenience
 import sub, pims
 import trackpy as tp
 import time
 
-# Optionally, tweak styles.
-mpl.rc('figure',  figsize=(5, 10))
-mpl.rc('image', cmap='gray')
+os.chdir('/Users/hk/Desktop/Research/SFA/Electrokinetics/2020-09-25 Pt mobility/code')
+info = pd.read_csv('info.txt', delimiter=',', header=0)
+# np.loadtxt(csv_path, delimiter=',', skiprows=1, usecols=x_cols)
 
-# os.chdir('/Volumes/LEMI_HK/LLNL BioSFA/EK/2021-04-25/tiff')
-os.chdir('/Users/hk/Desktop/Research/SFA/Electrokinetics/trackpy')
+path_tif = '/Volumes/LEMI_HK/LLNL BioSFA/EK/XXXX-XX-XX/tif_v2'
+exp_date = ['2020-09-17','2021-04-25']
+i = 0;
+path_tif = path_tif.replace('XXXX-XX-XX',info.values[i,0])
+os.chdir(path_tif)
 
-s = '+1R1_R1_Ch05_TxRed_10-60V_1Vps_10X_001';
-frame = pims.open('%s.ome_v2.tif' % s); #v2, adjusted with imageJ
-text = open('%s.txt' % s,'r');
-# frame2 = trans_contrast(frame, q1=0.7, q2=1-1e-3)
+# s = '+1R1_R1_Ch05_TxRed_10-60V_1Vps_10X_001';
+# frame = pims.open('%s.ome_v2.tif' % s); #v2, adjusted with imageJ
+frame = pims.open('%s_R%d_Ch%02d_TxRed_10-60V_1Vps_10X_001.ome_v2.tif' % (info.values[i,2], info.values[i,3], info.values[i,1]));
+
 
 diam = 35;
-i = 350;
-
 t1 = time.time();
 f0 = tp.locate(frame[i], diam, invert=False, topn=25);
 f1 = tp.locate(frame[i+1], diam, invert=False, topn=25);
@@ -57,6 +57,4 @@ tr = sub.filter_ephemeral(tr);
 tr_v = sub.scatter_v(tr);
 tr_v = sub.filter_v(tr_v, xlim=3);
 v = sub.plot_v_quantile(tr_v, 'q1');
-v2 = sub.conv_vy(v, front=100, back=299);
-
-# fps = 
+v2 = sub.convert_vy(v, front=info.values[i,-2], back=info.values[i,-1]);

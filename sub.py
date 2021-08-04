@@ -267,7 +267,7 @@ def plot_v_quantile(tr_v, s):
     plt.grid();
     return v
 
-def conv_vy(v, front, back, rate_time=0.138, rate_space=0.0644):
+def convert_vy(v, front, back, rate_time=0.138, rate_space=0.0644):
     """
     Trims starting / ending frames. Converts units in time / space
 
@@ -294,3 +294,18 @@ def conv_vy(v, front, back, rate_time=0.138, rate_space=0.0644):
     t = np.array(range(len(v))) * rate_time;
     v2 = np.hstack((np.transpose([t]), -np.transpose([v])));
     return v2
+
+def calc_param(v2):
+    """
+    Calculates mobility and zeta potential from time-velocity data via linear regression
+    
+    """
+    # constants
+    eps_r = 80; # relative permitivity
+    eps_0 = 8.854e-12; # vacuum permitivity
+    eta = 8.66e-4; # viscosity
+    l = 10e-3; # channel length
+    
+    coef = np.polyfit(v2[:,0], v2[:,1], 1) # [0,] µm / V
+    # mu = 
+    # return mu, zeta
