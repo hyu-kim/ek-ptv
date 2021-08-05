@@ -16,7 +16,6 @@ import sub, pims
 import trackpy as tp
 import time
 
-
 path_info = '/Users/hk/Desktop/Research/SFA/Electrokinetics/2020-09-25 Pt mobility/code/info.txt'
 path_plot = '/Users/hk/Desktop/Research/SFA/Electrokinetics/2020-09-25 Pt mobility/plot'
 info = pd.read_csv(path_info, delimiter=',', header=0)
@@ -24,33 +23,27 @@ info = pd.read_csv(path_info, delimiter=',', header=0)
 
 path_tif = '/Volumes/LEMI_HK/LLNL BioSFA/EK/XXXX-XX-XX/tif_v2'
 exp_date = ['2020-09-17','2021-04-25']
-i = 2;
+
+i = 3;
 path_tif = path_tif.replace('XXXX-XX-XX',info.values[i,0])
 s = path_tif + '/' + '%s_R%d_Ch%02d_TxRed_10-60V_1Vps_10X_001.ome_v2.tif' % (info.values[i,2], info.values[i,3], info.values[i,1])
 frame = pims.open(s)
-
 t1 = time.time();
-# f0 = tp.locate(frame[i], diam, invert=False, topn=25);
-# f1 = tp.locate(frame[i+1], diam, invert=False, topn=25);
 f = sub.pile(frame, diam=35, topn=25);
 t2 = time.time();
 print("elapsed : %s sec" % (t2-t1));
-
 pred = tp.predict.NearestVelocityPredict();
-# tr = pd.concat(pred.link_df_iter((f0, f1), search_range=40))
-# tr = pd.concat(tp.link_df_iter((f0, f1), search_range=est_vel(i)))
 tr = pd.concat(pred.link_df_iter(f, search_range=40));
-# tr = tp.link(f, 50);
-sub.trshow(tr[5000:7000]);
-
+# tr = tp.link(f, 50); # not anymore
+# sub.trshow(tr[5000:7000]);
 # tr = tr[(tr['x'] < x_hi) & (tr['x'] > x_lo)]; # not recommended to use
 tr = sub.filter_ephemeral(tr);
 tr_v = sub.scatter_v(tr);
 
-tr_vf = sub.filter_v(tr_v, xlim=5, ylim1=5, ylim2=-25, direction=True);
-
+tr_vf = sub.filter_v(tr_v, xlim=3, ylim1=3, ylim2=-25, direction=True);
 v = sub.plot_v_quantile(tr_vf, 'q1');
 
+info = pd.read_csv(path_info, delimiter=',', header=0) # update info
 v2 = sub.convert_vy(v, front=info.values[i,-2], back=info.values[i,-1]);
 
 (mu, zeta) = sub.calc_param(v2)

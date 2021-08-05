@@ -267,22 +267,22 @@ def plot_v_quantile(tr_v, s):
     plt.grid();
     return v
 
-def convert_vy(v, front, back, rate_time=0.138, rate_space=0.0644):
+def convert_vy(v, front, back, rate_time=0.138, rate_space=1.288):
     """
     Trims starting / ending frames. Converts units in time / space
 
     Parameters
     ----------
-    v : array
-        list of v_y statistics per frame
+    v : np array
+        list of v_y statistics per frame [px/frame]
     front : numeric
         initial frame number to include.
     back : numeric
         last frame number to include.
     rate_time : float
-        conversion from frame to sec.
+        conversion factor [s/frame]
     rate_space : float
-        conversion from px to um.
+        conversion factor [µm/px]
 
     Returns
     -------
@@ -292,7 +292,7 @@ def convert_vy(v, front, back, rate_time=0.138, rate_space=0.0644):
     """
     v = v[front:back+1] * rate_space / rate_time;
     t = np.array(range(len(v))) * rate_time;
-    v2 = np.hstack((np.transpose([t]), -np.transpose([v])));
+    v2 = np.hstack((np.transpose([t]), np.transpose([-v])));
     return v2
 
 def calc_param(v2):
