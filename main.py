@@ -21,10 +21,8 @@ path_plot = '/Users/hk/Desktop/Research/SFA/Electrokinetics/2020-09-25 Pt mobili
 info = pd.read_csv(path_info, delimiter=',', header=0)
 # np.loadtxt(csv_path, delimiter=',', skiprows=1, usecols=x_cols)
 
+i = 6;
 path_tif = '/Volumes/LEMI_HK/LLNL BioSFA/EK/XXXX-XX-XX/tif_v2'
-exp_date = ['2020-09-17','2021-04-25']
-
-i = 3;
 path_tif = path_tif.replace('XXXX-XX-XX',info.values[i,0])
 s = path_tif + '/' + '%s_R%d_Ch%02d_TxRed_10-60V_1Vps_10X_001.ome_v2.tif' % (info.values[i,2], info.values[i,3], info.values[i,1])
 frame = pims.open(s)
@@ -35,16 +33,15 @@ print("elapsed : %s sec" % (t2-t1));
 pred = tp.predict.NearestVelocityPredict();
 tr = pd.concat(pred.link_df_iter(f, search_range=40));
 # tr = tp.link(f, 50); # not anymore
-# sub.trshow(tr[5000:7000]);
 # tr = tr[(tr['x'] < x_hi) & (tr['x'] > x_lo)]; # not recommended to use
 tr = sub.filter_ephemeral(tr);
 tr_v = sub.scatter_v(tr);
 
-tr_vf = sub.filter_v(tr_v, xlim=3, ylim1=3, ylim2=-25, direction=True);
+tr_vf = sub.filter_v(tr_v, xlim=3, ylim1=5, ylim2=-30, direction=True);
+
 v = sub.plot_v_quantile(tr_vf, 'q1');
 
 info = pd.read_csv(path_info, delimiter=',', header=0) # update info
 v2 = sub.convert_vy(v, front=info.values[i,-2], back=info.values[i,-1]);
-
 (mu, zeta) = sub.calc_param(v2)
 sub.plot_v2(v2, path_plot, plotinfo='%s_R%d_%s' % (info.values[i,2], info.values[i,3], info.values[i,0]))
