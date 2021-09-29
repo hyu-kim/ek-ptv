@@ -19,33 +19,33 @@ import pandas as pd
 import sub, pims
 import trackpy as tp
 import time
-# %%
+# %% Track single cells and obtain zeta
 path_info = '/Users/hk/Desktop/LEMI/SFA/Electrokinetics/2020-09-25 Pt mobility/code/info.txt'
 path_plot = '/Users/hk/Desktop/LEMI/SFA/Electrokinetics/2020-09-25 Pt mobility/plot'
 info = pd.read_csv(path_info, delimiter=',', header=0)
-# np.loadtxt(csv_path, delimiter=',', skiprows=1, usecols=x_cols)
 
-i = 7;
+ind = 1;
 path_tif = '/Volumes/LEMI_HK/LLNL BioSFA/EK/XXXX-XX-XX/tif_v2'
-path_tif = path_tif.replace('XXXX-XX-XX',info.values[i,0])
-s = path_tif + '/' + '%s_R%d_Ch%02d_TxRed_10-60V_1Vps_10X_001.ome_v2.tif' % (info.values[i,2], info.values[i,3], info.values[i,1])
+path_tif = path_tif.replace('XXXX-XX-XX',info.values[ind,0])
+s = path_tif + '/' + '%s_R%d_Ch%02d_TxRed_10-60V_1Vps_10X_001.ome_v2.tif' % (info.values[ind,2], info.values[ind,3], info.values[ind,1])
 frame = pims.open(s)
-t1 = time.time();
+# t1 = time.time();
 f = sub.pile(frame, diam=35, topn=25);
 pred = tp.predict.NearestVelocityPredict();
 tr = pd.concat(pred.link_df_iter(f, search_range=40));
-# tr = tp.link(f, 50); # not anymore
-# tr = tr[(tr['x'] < x_hi) & (tr['x'] > x_lo)]; # not recommended to use
 tr = sub.filter_ephemeral(tr);
 tr_v = sub.scatter_v(tr);
-t2 = time.time();
-print("elapsed : %s sec" % (t2-t1));
+# print("elapsed : %s sec" % (time.time()-t1));
+tr_v2 = sub.filter_v(tr_v, xlim=4, ylim1=10, ylim2=-40, direction=True);
 
-tr_vf = sub.filter_v(tr_v, xlim=4, ylim1=10, ylim2=-40, direction=True);
+# v = sub.plot_v_quantile(tr_v2, 'mean');
+# info = pd.read_csv(path_info, delimiter=',', header=0) # updated info after seeing v
 
-v = sub.plot_v_quantile(tr_vf, 'q1');
+tr_v3 = convert_tr(tr_v2, front=info.values[ind,-2], back=info.values[ind,-1])
+tr_av = each_particle(tr_v3)
 
-info = pd.read_csv(path_info, delimiter=',', header=0) # update info
-v2 = sub.convert_vy(v, front=info.values[i,-2], back=info.values[i,-1]);
-(mu, zeta) = sub.calc_param(v2)
-sub.plot_v2(v2, path_plot, plotinfo='%s_R%d_%s' % (info.values[i,2], info.values[i,3], info.values[i,0]))
+##%% Export to comma delimited text file
+path_sav = '/Users/hk/Desktop/LEMI/SFA/Electrokinetics/2020-09-25 Pt mobility/single_cell/'
+tr_sav = get_tr_sav(tr_av, ind, info)
+s = path_sav + 'Ch%02d_%s_R%d_single.csv' % (info['channel'][ind], info['cond'][ind], info['rep'][ind])
+tr_sav.to_csv(s, index = False)

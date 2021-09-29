@@ -169,10 +169,10 @@ def scatter_v(tr):
             fr = min(tr['frame'][tr['particle']==i]);
         i_prev = i;
     tr_v = tr_v[~np.isnan(tr_v['v_x'])];
-    mpl.rc('figure',  figsize=(10, 10));
-    plt.figure();
-    plt.plot(tr_v['v_x'], tr_v['v_y'], 'b.', markersize=2);
-    plt.grid();
+    # mpl.rc('figure',  figsize=(10, 10));
+    # plt.figure();
+    # plt.plot(tr_v['v_x'], tr_v['v_y'], 'b.', markersize=2);
+    # plt.grid();
     return tr_v
 
 def filter_v(tr_v, xlim=5, ylim1=5, ylim2=-35, direction=True):
@@ -200,10 +200,10 @@ def filter_v(tr_v, xlim=5, ylim1=5, ylim2=-35, direction=True):
     if not direction:
         tr_v['v_y'] = -tr_v['v_y'];
     tr_v2 = tr_v[(abs(tr_v['v_x'])<xlim) & (tr_v['v_y']<ylim1) & (tr_v['v_y']>ylim2)];
-    mpl.rc('figure',  figsize=(10, 10));
-    plt.figure();
-    plt.plot(tr_v2['v_x'], tr_v2['v_y'], 'b.', markersize=2);
-    plt.grid();
+    # mpl.rc('figure',  figsize=(10, 10));
+    # plt.figure();
+    # plt.plot(tr_v2['v_x'], tr_v2['v_y'], 'b.', markersize=2);
+    # plt.grid();
     return tr_v2
 
 def distrib_v(tr_v, fr):
@@ -387,3 +387,27 @@ def each_particle(tr_v):
             tr_avg = pd.concat([tr_avg, tup], axis=0)
 
     return tr_avg
+
+def get_tr_sav(tr_av, ind, info):
+    """
+    Exports mobility and zeta potential from tr_av with treatment information
+
+    Parameters
+    ----------
+    tr_av : Dataframe
+            trace matrix with zeta and mobility
+    ind : numeric
+          index required to save
+    info : dataframe
+           matrix that includes experimetal condition
+    """
+    colname = ['mobility', 'zeta']
+    tr_sav = pd.DataFrame(columns = colname)
+    for i in tr_av['particle']:
+        tup = pd.DataFrame([[
+            tr_av.values[tr_av['particle']==i][0][5],
+            tr_av.values[tr_av['particle']==i][0][6]
+        ]], columns = colname)
+        tr_sav = pd.concat([tr_sav, tup], axis=0)
+
+    return tr_sav
