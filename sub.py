@@ -6,7 +6,7 @@ Created on Wed Jun 30 23:35:06 2021
 @author: Hyu Kim (hskimm@mit.edu)
 
 """
-
+#%%
 import numpy as np
 import matplotlib.pyplot as plt
 import matplotlib as mpl
@@ -15,6 +15,7 @@ import pandas as pd
 import copy
 import trackpy as tp
 
+#%%
 @pims.pipeline
 def trans_contrast(frame, q1=0.3, q2=0.995):
     """
@@ -295,6 +296,33 @@ def convert_vy(v, front, back, rate_time=0.138, rate_space=1.288):
     v2 = np.hstack((np.transpose([t]), np.transpose([-v])));
     return v2
 
+def convert_tr(tr_v, front, back, rate_time=0.138, rate_space=1.288):
+    """
+    Trims the first and last frames and convert units in time / space
+    
+    Parameters
+    ----------
+    tr_v : dataframe
+           trace matrix with velocity
+    front : numeric
+            starting frame number
+    back : numeric
+           ending frame number
+    rate_time : float
+        conversion factor [s/frame]
+    rate_space : float
+        conversion factor [µm/px]
+    """
+    tr_v2 = tr_v.copy()
+    tr_v2 = tr_v2[(tr_v2['frame']>=front)&(tr_v2['frame']<back)]
+    tr_v2['frame'] = (tr_v2['frame'] - front) * rate_time
+    tr_v2['x'] = tr_v2['x'] * rate_space
+    tr_v2['y'] = tr_v2['y'] * rate_space
+    tr_v2['v_x'] = tr_v2['v_x'] * rate_space / rate_time
+    tr_v2['v_y'] = tr_v2['v_y'] * rate_space / rate_time
+    tr_v2 = tr_v2.rename({'frame':'time'}, axis=1)
+    return tr_v2
+
 def calc_param(v2):
     """
     Calculates mobility and zeta potential from time-velocity data via linear regression
@@ -321,28 +349,41 @@ def plot_v2(v2, path = None, plotinfo = None):
         path = path + '/' + plotinfo
         plt.savefig(path)
 
-# def zeta_indiv(tr_v):
-#     """
-#     Obtain average velocity, mobility etc for each particle
+def each_particle(tr_v):
+    """
+    Obtain average velocity, mobility etc for each particle
 
-#     Parameters
-#     ----------
-#     tr_v : Dataframe
-#            velocity info for each frame and particle
-#     Returns
-#     -------
-#     tr_zeta : Dataframe
-#               mean velocity and zeta potential for each particle (averaged by sequence frames)
-#     """
-#     n_prt = max(tr_v['particle'])
-#     tr_avg = pd.DataFrame(columns = ['particle', 'frame_mean', 'frame_diff', 'velocity', 'voltage', 'mobility', 'zeta'])
+    Parameters
+    ----------
+    tr_v : Dataframe
+           trace matrix with velocity in conversed units at each frame and particle
+    Returns
+    -------
+    tr_zeta : Dataframe
+              mean velocity and zeta potential for each particle (averaged by sequence frames)
+    """
+    # constants
+    eps_r = 80; # relative permitivity []
+    eps_0 = 8.854e-12; # vacuum permitivity [F/m]
+    eta = 8.66e-4; # viscosity [Pa-s]
+    l = 10e-3; # channel length [m]
+    n_prt = max(tr_v['particle'])
+    colname = ['particle', 'time', 'duration', 'velocity', 'voltage', 'mobility', 'zeta']
+    tr_avg = pd.DataFrame(columns = colname)
     
-#     for i in range(n_prt):
-#         if len(tr_v['frame'][tr_v['particle']==i+1]) > 0:
-#             tr_avg['particle'] = i+1
-#             f0 = min(tr_v['frame'][tr_v['particle']==i+1])
-#             f1 = max(tr_v['frame'][tr_v['particle']==i+1])
-#             tr_avg['frame_mean'] = (f0 + f1) / 2
-#             tr_avg['frame_diff']  = f1 - f0
-#             tr_avg['velocity'] = 
-#     return tr_avg
+    for i in range(min(tr_v['particle']), max(tr_v['particle'])+1):
+        ind = tr_v['particle']==i
+        if len(tr_v['time'][ind]) > 0:
+            par = i # particle no
+            t0 = min(tr_v['time'][ind])
+            t1 = max(tr_v['time'][ind])
+            t_a = (t0 + t1) / 2 # time sec
+            dur = t1 - t0 # duration sec
+            vel = np.mean(tr_v3['v_y'][ind]) # velocity µm/s
+            vol = t_a # voltage, ramp rate 1 Vps
+            mob = vel / (vol/l) * 1e-6 # mobility, [m2/s-V]
+            zet = mob * eta / (eps_r * eps_0) # zeta potential, V
+            tup = pd.DataFrame([[par, t_a, dur, vel, vol, mob, zet]], columns = colname)
+            tr_avg = pd.concat([tr_avg, tup], axis=0)
+
+    return tr_avg
