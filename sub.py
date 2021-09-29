@@ -320,3 +320,29 @@ def plot_v2(v2, path = None, plotinfo = None):
     if path is not None:
         path = path + '/' + plotinfo
         plt.savefig(path)
+
+# def zeta_indiv(tr_v):
+#     """
+#     Obtain average velocity, mobility etc for each particle
+
+#     Parameters
+#     ----------
+#     tr_v : Dataframe
+#            velocity info for each frame and particle
+#     Returns
+#     -------
+#     tr_zeta : Dataframe
+#               mean velocity and zeta potential for each particle (averaged by sequence frames)
+#     """
+#     n_prt = max(tr_v['particle'])
+#     tr_avg = pd.DataFrame(columns = ['particle', 'frame_mean', 'frame_diff', 'velocity', 'voltage', 'mobility', 'zeta'])
+    
+#     for i in range(n_prt):
+#         if len(tr_v['frame'][tr_v['particle']==i+1]) > 0:
+#             tr_avg['particle'] = i+1
+#             f0 = min(tr_v['frame'][tr_v['particle']==i+1])
+#             f1 = max(tr_v['frame'][tr_v['particle']==i+1])
+#             tr_avg['frame_mean'] = (f0 + f1) / 2
+#             tr_avg['frame_diff']  = f1 - f0
+#             tr_avg['velocity'] = 
+#     return tr_avg

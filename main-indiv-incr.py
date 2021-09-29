@@ -1,7 +1,8 @@
+# %%
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 """
-Last modified on 8/20/2021
+Last modified on 9/28/2021
 @author: Hyu Kim (hskimm@mit.edu)
 
 Objectives
@@ -18,9 +19,9 @@ import pandas as pd
 import sub, pims
 import trackpy as tp
 import time
-
-path_info = '/Users/hk/Desktop/Research/SFA/Electrokinetics/2020-09-25 Pt mobility/code/info.txt'
-path_plot = '/Users/hk/Desktop/Research/SFA/Electrokinetics/2020-09-25 Pt mobility/plot'
+# %%
+path_info = '/Users/hk/Desktop/LEMI/SFA/Electrokinetics/2020-09-25 Pt mobility/code/info.txt'
+path_plot = '/Users/hk/Desktop/LEMI/SFA/Electrokinetics/2020-09-25 Pt mobility/plot'
 info = pd.read_csv(path_info, delimiter=',', header=0)
 # np.loadtxt(csv_path, delimiter=',', skiprows=1, usecols=x_cols)
 
