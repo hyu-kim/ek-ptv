@@ -391,6 +391,7 @@ def each_particle(tr_v):
 def get_tr_sav(tr_av, ind, info):
     """
     Exports mobility and zeta potential from tr_av with treatment information
+    Update: no longer used since K-means algorithm
 
     Parameters
     ----------

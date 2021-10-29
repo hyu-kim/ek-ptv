@@ -44,8 +44,8 @@ tr_v2 = sub.filter_v(tr_v, xlim=4, ylim1=10, ylim2=-40, direction=True);
 tr_v3 = convert_tr(tr_v2, front=info.values[ind,-2], back=info.values[ind,-1])
 tr_av = each_particle(tr_v3)
 
-##%% Export to comma delimited text file
+# %% Export to comma delimited text file
 path_sav = '/Users/hk/Desktop/LEMI/SFA/Electrokinetics/2020-09-25 Pt mobility/single_cell/'
-tr_sav = get_tr_sav(tr_av, ind, info)
+tr_sav = get_tr_sav(tr_av, ind, info)    
 s = path_sav + 'Ch%02d_%s_R%d_single.csv' % (info['channel'][ind], info['cond'][ind], info['rep'][ind])
 tr_sav.to_csv(s, index = False)
