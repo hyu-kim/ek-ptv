@@ -223,10 +223,10 @@ def distrib_v(tr_v, fr):
 
     """
     tr_vf = tr_v[tr_v['frame']==fr];
-    mpl.rc('figure',  figsize=(10, 10));
-    plt.figure();
-    plt.plot(tr_vf['v_x'], tr_vf['v_y'], 'b.', markersize=2);
-    plt.grid();
+    # mpl.rc('figure',  figsize=(10, 10));
+    # plt.figure();
+    # plt.plot(tr_vf['v_x'], tr_vf['v_y'], 'b.', markersize=2);
+    # plt.grid();
     
 def plot_v_quantile(tr_v, s):
     """
@@ -262,10 +262,10 @@ def plot_v_quantile(tr_v, s):
         tr_vf = tr_v['v_y'][tr_v['frame']==i+1];
         v[i] = fn(tr_vf);
         
-    mpl.rc('figure',  figsize=(10, 10));
-    plt.figure();
-    plt.plot(range(n_fr), v, '-k', markersize=2);
-    plt.grid();
+    # mpl.rc('figure',  figsize=(10, 10));
+    # plt.figure();
+    # plt.plot(range(n_fr), v, '-k', markersize=2);
+    # plt.grid();
     return v
 
 def convert_vy(v, front, back, rate_time=0.138, rate_space=1.288):
@@ -340,10 +340,10 @@ def calc_param(v2):
     return mu, zeta
 
 def plot_v2(v2, path = None, plotinfo = None):
-    mpl.rc('figure',  figsize=(10, 10));
-    plt.rc('font', size=16)
-    plt.figure();
-    plt.plot(v2[:,0], v2[:,1], '.k', markersize=5);
+    # mpl.rc('figure',  figsize=(10, 10));
+    # plt.rc('font', size=16)
+    # plt.figure();
+    # plt.plot(v2[:,0], v2[:,1], '.k', markersize=5);
     # plt.grid();
     if path is not None:
         path = path + '/' + plotinfo
