@@ -2,7 +2,9 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 """
-Created on Mon Jun 28 02:46:22 2021
+Last modified on Oct 30 2021
+
+For LPS-DEP project. Updates include 1) file path, 2) noise reduction for bacterial cell tracking
 
 @author: Hyu Kim (hskimm@mit.edu)
 """
@@ -17,25 +19,29 @@ import sub, pims
 import trackpy as tp
 import time
 
+from trackpy.sub import plot_tr_v
+
 # %%
-path_info = '/Users/hk/Desktop/LEMI/SFA/Electrokinetics/2020-09-25 Pt mobility/code/info.txt'
-path_plot = '/Users/hk/Desktop/LEMI/SFA/Electrokinetics/2020-09-25 Pt mobility/plot'
+path_info = '/Users/hk/Desktop/LEMI/DEP-LPS/Linear EK/info.txt'
+path_plot = '/Users/hk/Desktop/LEMI/DEP-LPS/Linear EK'
 info = pd.read_csv(path_info, delimiter=',', header=0)
 # np.loadtxt(csv_path, delimiter=',', skiprows=1, usecols=x_cols)
 
-i = 7;
-path_tif = '/Volumes/LEMI_HK/LLNL BioSFA/EK/XXXX-XX-XX/tif_v2'
+i = 0
+path_tif = '/Volumes/LEMI_HK/LPS-DEP/XXXX-XX-XX/adjusted'
 path_tif = path_tif.replace('XXXX-XX-XX',info.values[i,0])
-s = path_tif + '/' + '%s_R%d_Ch%02d_TxRed_10-60V_1Vps_10X_001.ome_v2.tif' % (info.values[i,2], info.values[i,3], info.values[i,1])
+s = path_tif + '/' + '%s_R%d_Ch%02d_GFP_%02dV_20X_001.ome_v2.tif' % (info.cond[i], info.rep[i], info.channel[i], info.voltage[i])
 frame = pims.open(s)
-t1 = time.time();
-f = sub.pile(frame, diam=35, topn=25);
-pred = tp.predict.NearestVelocityPredict();
-tr = pd.concat(pred.link_df_iter(f, search_range=40));
+t1 = time.time()
+f = sub.pile(frame[10:12], diam=35, topn=20)
+pred = tp.predict.NearestVelocityPredict()
+tr = pd.concat(pred.link_df_iter(f, search_range=40))
 # tr = tp.link(f, 50); # not anymore
 # tr = tr[(tr['x'] < x_hi) & (tr['x'] > x_lo)]; # not recommended to use
 tr = sub.filter_ephemeral(tr);
-tr_v = sub.scatter_v(tr);
+tr_v = get_v(tr)
+plot_tr_v(tr_v)
+
 t2 = time.time();
 print("elapsed : %s sec" % (t2-t1));
 

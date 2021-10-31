@@ -138,9 +138,10 @@ def filter_ephemeral(tr, thres=9):
                      for i in range(max(tr_particle))]);
     return tr2
 
-def scatter_v(tr):
+def get_v(tr):
     """
-    Plots scatter plot of trace dataframe. Generates a trace dataframe added with velocity
+    Generates a trace dataframe added with velocity
+    # Plots scatter plot of trace dataframe. 
 
     Parameters
     ----------
@@ -156,6 +157,7 @@ def scatter_v(tr):
     tr_v = tr.copy();
     tr_v['v_x'] = tr['ep'];
     tr_v['v_y'] = tr['ep'];
+    tr_v.frame = tr_v.frame - min(tr_v.frame)
     fr = 0;
     i_prev = min(tr['particle'])-1;
     for i in tr['particle']:
@@ -169,11 +171,17 @@ def scatter_v(tr):
             fr = min(tr['frame'][tr['particle']==i]);
         i_prev = i;
     tr_v = tr_v[~np.isnan(tr_v['v_x'])];
-    # mpl.rc('figure',  figsize=(10, 10));
-    # plt.figure();
-    # plt.plot(tr_v['v_x'], tr_v['v_y'], 'b.', markersize=2);
-    # plt.grid();
+    
     return tr_v
+
+def plot_tr_v(tr_v):
+    """
+    Plots scatters of velocity from tr_v
+    """
+    mpl.rc('figure',  figsize=(10, 10));
+    plt.figure();
+    plt.plot(tr_v['v_x'], tr_v['v_y'], 'b.', markersize=2);
+    plt.grid();
 
 def filter_v(tr_v, xlim=5, ylim1=5, ylim2=-35, direction=True):
     """
@@ -340,6 +348,9 @@ def calc_param(v2):
     return mu, zeta
 
 def plot_v2(v2, path = None, plotinfo = None):
+    """
+    Exports figure (velocity plot) to a path
+    """
     # mpl.rc('figure',  figsize=(10, 10));
     # plt.rc('font', size=16)
     # plt.figure();
