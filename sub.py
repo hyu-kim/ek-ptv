@@ -15,7 +15,6 @@ import pandas as pd
 import copy
 import trackpy as tp
 
-#%%
 @pims.pipeline
 def trans_contrast(frame, q1=0.3, q2=0.995):
     """
@@ -126,7 +125,7 @@ def filter_ephemeral(tr, thres=9):
     tr : Dataframe
         trace matrix size of (topn * no. frames, 10).
     thres : Integer
-        maximum number of frames to filter.
+        number of frames to be set as a threshold.
 
     Returns
     -------
@@ -141,7 +140,6 @@ def filter_ephemeral(tr, thres=9):
 def get_v(tr):
     """
     Generates a trace dataframe added with velocity
-    # Plots scatter plot of trace dataframe. 
 
     Parameters
     ----------
@@ -170,7 +168,7 @@ def get_v(tr):
         else:
             fr = min(tr['frame'][tr['particle']==i]);
         i_prev = i;
-    tr_v = tr_v[~np.isnan(tr_v['v_x'])];
+    tr_v = tr_v[~np.isnan(tr_v['v_x'])]
     
     return tr_v
 
@@ -360,7 +358,7 @@ def plot_v2(v2, path = None, plotinfo = None):
         path = path + '/' + plotinfo
         plt.savefig(path)
 
-def each_particle(tr_v):
+def each_particle(tr_v, vol_init=10, ramp_rate=0):
     """
     Obtain average velocity, mobility etc for each particle
 
@@ -368,6 +366,8 @@ def each_particle(tr_v):
     ----------
     tr_v : Dataframe
            trace matrix with velocity in conversed units at each frame and particle
+    ramp_rate : float
+                increase rate of voltage by time (V/s). Default by zero
     Returns
     -------
     tr_zeta : Dataframe
@@ -382,18 +382,18 @@ def each_particle(tr_v):
     colname = ['particle', 'time', 'duration', 'velocity', 'voltage', 'mobility', 'zeta']
     tr_avg = pd.DataFrame(columns = colname)
     
-    for i in range(min(tr_v['particle']), max(tr_v['particle'])+1):
+    for i in tr_v.particle:
         ind = tr_v['particle']==i
         if len(tr_v['time'][ind]) > 0:
             par = i # particle no
             t0 = min(tr_v['time'][ind])
             t1 = max(tr_v['time'][ind])
-            t_a = (t0 + t1) / 2 # time sec
-            dur = t1 - t0 # duration sec
-            vel = np.mean(tr_v3['v_y'][ind]) # velocity µm/s
-            vol = t_a # voltage, ramp rate 1 Vps
+            t_a = (t0 + t1) / 2 # time [sec]
+            dur = t1 - t0 # duration [sec]
+            vel = np.mean(tr_v['v_y'][ind]) # velocity [µm/s]
+            vol = t_a * ramp_rate + vol_init # voltage, mutlplied by ramp rate [V]
             mob = vel / (vol/l) * 1e-6 # mobility, [m2/s-V]
-            zet = mob * eta / (eps_r * eps_0) # zeta potential, V
+            zet = mob * eta / (eps_r * eps_0) # zeta potential, [V]
             tup = pd.DataFrame([[par, t_a, dur, vel, vol, mob, zet]], columns = colname)
             tr_avg = pd.concat([tr_avg, tup], axis=0)
 

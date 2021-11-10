@@ -9,7 +9,7 @@ Created on Oct 29, 2021
 """
 import pandas as pd
 import numpy as np
-# %%
+
 def k_means(tr_av_mobility, convergence_limit=0.05):
     """
     Filters out zero-centered values and return non-zero mean
