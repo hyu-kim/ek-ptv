@@ -34,18 +34,21 @@ path_tif = '/Volumes/LEMI_HK/LLNL BioSFA/EK/XXXX-XX-XX/tif_v2'
 path_tif = path_tif.replace('XXXX-XX-XX',info.values[ind,0])
 s = path_tif + '/' + '%s_R%d_Ch%02d_TxRed_10-60V_1Vps_10X_001.ome_v2.tif' % (info.values[ind,2], info.values[ind,3], info.values[ind,1])
 frame = pims.open(s)
-f = sub.pile(frame, diam=35, topn=25);
-pred = tp.predict.NearestVelocityPredict();
-tr = pd.concat(pred.link_df_iter(f, search_range=40));
-tr = sub.filter_ephemeral(tr);
-tr_v = sub.scatter_v(tr);
-tr_v2 = sub.filter_v(tr_v, xlim=4, ylim1=10, ylim2=-40, direction=True);
+f = sub.pile(frame, diam=35, topn=25)
 
-# v = sub.plot_v_quantile(tr_v2, 'mean');
-# info = pd.read_csv(path_info, delimiter=',', header=0) # updated info after seeing v
+pred = tp.predict.NearestVelocityPredict()
+tr = pd.concat(pred.link_df_iter(f, search_range=10))
+
+tr = sub.filter_ephemeral(tr)
+
+tr_v = sub.get_v(tr)
+
+tr_v2 = sub.filter_v(tr_v, xlim=4, ylim1=10, ylim2=-40, direction=True)
+sub.plot_tr_v(tr_v2)
 
 tr_v3 = sub.convert_tr(tr_v2, front=info.values[ind,-2], back=info.values[ind,-1])
-tr_av = sub.each_particle(tr_v3)
+
+tr_av = sub.each_particle(tr_v3, vol_init=10, ramp_rate=1)
 
 mu, tr_av2 = sub2.k_means(tr_av['mobility'])
 

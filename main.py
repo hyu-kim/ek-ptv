@@ -23,15 +23,15 @@ path_plot = '/Users/hk/Desktop/LEMI/SFA/Electrokinetics/2020-09-25 Pt mobility/p
 info = pd.read_csv(path_info, delimiter=',', header=0)
 # np.loadtxt(csv_path, delimiter=',', skiprows=1, usecols=x_cols)
 
-i = 7;
+i = 7
 path_tif = '/Volumes/LEMI_HK/LLNL BioSFA/EK/XXXX-XX-XX/tif_v2'
 path_tif = path_tif.replace('XXXX-XX-XX',info.values[i,0])
 s = path_tif + '/' + '%s_R%d_Ch%02d_TxRed_10-60V_1Vps_10X_001.ome_v2.tif' % (info.values[i,2], info.values[i,3], info.values[i,1])
 frame = pims.open(s)
-t1 = time.time();
-f = sub.pile(frame, diam=35, topn=25);
-pred = tp.predict.NearestVelocityPredict();
-tr = pd.concat(pred.link_df_iter(f, search_range=40));
+t1 = time.time()
+f = sub.pile(frame, diam=35, topn=25)
+pred = tp.predict.NearestVelocityPredict()
+tr = pd.concat(pred.link_df_iter(f, search_range=10))
 # tr = tp.link(f, 50); # not anymore
 # tr = tr[(tr['x'] < x_hi) & (tr['x'] > x_lo)]; # not recommended to use
 tr = sub.filter_ephemeral(tr);

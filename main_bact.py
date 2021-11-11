@@ -37,7 +37,7 @@ t1 = time.time()
 f = sub.pile(frame[1:], diam=25, topn=10) # exclude the first frame it has been subtracted to remove background
 
 pred = tp.predict.NearestVelocityPredict()
-tr = pd.concat(pred.link_df_iter(f, search_range=40))
+tr = pd.concat(pred.link_df_iter(f, search_range=25))
 # tr = tp.link(f, 50); # not anymore
 # tr = tr[(tr['x'] < x_hi) & (tr['x'] > x_lo)]; # not recommended to use
 

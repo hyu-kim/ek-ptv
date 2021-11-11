@@ -183,7 +183,7 @@ def plot_tr_v(tr_v):
 
 def filter_v(tr_v, xlim=5, ylim1=5, ylim2=-35, direction=True):
     """
-    Excludes velocity values out of bound
+    Excludes velocity values out of bound, unit in px/frame
 
     Parameters
     ----------
@@ -382,9 +382,10 @@ def each_particle(tr_v, vol_init=10, ramp_rate=0):
     colname = ['particle', 'time', 'duration', 'velocity', 'voltage', 'mobility', 'zeta']
     tr_avg = pd.DataFrame(columns = colname)
     
-    for i in tr_v.particle:
+    for i in range(n_prt):
         ind = tr_v['particle']==i
-        if len(tr_v['time'][ind]) > 0:
+        if len(tr_v['time'][ind]) > 4: # collects only when observed more than 4 frames
+            ind2 = tr_v['time'][ind]!=min(tr_v['time'][ind])
             par = i # particle no
             t0 = min(tr_v['time'][ind])
             t1 = max(tr_v['time'][ind])
@@ -396,6 +397,7 @@ def each_particle(tr_v, vol_init=10, ramp_rate=0):
             zet = mob * eta / (eps_r * eps_0) # zeta potential, [V]
             tup = pd.DataFrame([[par, t_a, dur, vel, vol, mob, zet]], columns = colname)
             tr_avg = pd.concat([tr_avg, tup], axis=0)
+            # print('particle no.', i)
 
     return tr_avg
 
