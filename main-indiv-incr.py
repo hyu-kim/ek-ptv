@@ -27,34 +27,33 @@ path_plot = '/Users/hk/Desktop/LEMI/SFA/Electrokinetics/2020-09-25 Pt mobility/p
 info = pd.read_csv(path_info, delimiter=',', header=0)
 
 # cond = [1,2,3,4,5,6,7, 9,10, 12,13,14]
-# i = 0
-# ind = cond[i]
-ind = 0
-path_tif = '/Volumes/LEMI_HK/LLNL BioSFA/EK/XXXX-XX-XX/tif_v2'
-path_tif = path_tif.replace('XXXX-XX-XX',info.values[ind,0])
-s = path_tif + '/' + '%s_R%d_Ch%02d_TxRed_10-60V_1Vps_10X_001.ome_v2.tif' % (info.values[ind,2], info.values[ind,3], info.values[ind,1])
-frame = pims.open(s)
-f = sub.pile(frame, diam=35, topn=25)
+# ind = 0
+for ind in range(14):
+    path_tif = '/Volumes/LEMI_HK/LLNL BioSFA/EK/XXXX-XX-XX/tif_v2'
+    path_tif = path_tif.replace('XXXX-XX-XX',info.values[ind,0])
+    s = path_tif + '/' + '%s_R%d_Ch%02d_TxRed_10-60V_1Vps_10X_001.ome_v2.tif' % (info.values[ind,2], info.values[ind,3], info.values[ind,1])
+    frame = pims.open(s)
+    f = sub.pile(frame, diam=35, topn=25)
 
-pred = tp.predict.NearestVelocityPredict()
-tr = pd.concat(pred.link_df_iter(f, search_range=10))
+    pred = tp.predict.NearestVelocityPredict()
+    tr = pd.concat(pred.link_df_iter(f, search_range=10))
 
-tr = sub.filter_ephemeral(tr)
+    tr = sub.filter_ephemeral(tr)
 
-tr_v = sub.get_v(tr)
+    tr_v = sub.get_v(tr)
 
-tr_v2 = sub.filter_v(tr_v, xlim=4, ylim1=10, ylim2=-40, direction=True)
-sub.plot_tr_v(tr_v2)
+    tr_v2 = sub.filter_v(tr_v, xlim=4, ylim1=10, ylim2=-40, direction=True)
+    sub.plot_tr_v(tr_v2)
 
-tr_v3 = sub.convert_tr(tr_v2, front=info.values[ind,-2], back=info.values[ind,-1])
+    tr_v3 = sub.convert_tr(tr_v2, front=info.values[ind,-2], back=info.values[ind,-1])
 
-tr_av = sub.each_particle(tr_v3, vol_init=10, ramp_rate=1)
+    tr_av = sub.each_particle(tr_v3, vol_init=10, ramp_rate=1)
 
-mu, tr_av2 = sub2.k_means(tr_av['mobility'])
+    mu, tr_av2 = sub2.k_means(tr_av['mobility'])
 
-# %% Export to comma delimited text file
-path_sav = '/Users/hk/Desktop/LEMI/SFA/Electrokinetics/2020-09-25 Pt mobility/single_cell/'
-tr_sav = pd.DataFrame(data = tr_av2, columns=['mobility'])
-# tr_sav = get_tr_sav(tr_av, ind, info)   #ignore in this updated version 
-s = path_sav + 'Ch%02d_%s_R%d_single_v2.csv' % (info['channel'][ind], info['cond'][ind], info['rep'][ind])
-tr_sav.to_csv(s, index = False)
+    # %% Export to comma delimited text file
+    path_sav = '/Users/hk/Desktop/LEMI/SFA/Electrokinetics/2020-09-25 Pt mobility/single_cell/'
+    tr_sav = pd.DataFrame(data = tr_av2, columns=['mobility'])
+    s = path_sav + 'Ch%02d_%s_R%d_single_v3.csv' % (info['channel'][ind], info['cond'][ind], info['rep'][ind])
+    tr_sav.to_csv(s, index = False)
+    print('video processed.')
