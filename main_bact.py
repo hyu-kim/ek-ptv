@@ -21,7 +21,6 @@ import sub,sub2, pims
 import trackpy as tp
 import time
 
-# from trackpy.sub import _
 # %%
 """
 Reads a list of files in a directory and creates a draft 'info.txt'
@@ -41,9 +40,14 @@ while ind<len(l):
 
 # create and add video info
 info = pd.DataFrame(columns=['date','channel','cond','rep','voltage','fps','front','back'])
-for ind in range(len(l)):
-    chl = l[ind]
-    new_row = {'date':exp_date, 'channel':}
+for s in l:
+    new_row = sub.str2df(s, exp_date)
+    info = info.append(new_row)
+
+# export to txt file
+info_dir = '/Users/hk/Desktop/LEMI/DEP-LPS/Linear EK/info_' + exp_date + '.txt'
+info.to_csv(info, index = False)
+
 # %%
 path_info = '/Users/hk/Desktop/LEMI/DEP-LPS/Linear EK/info_2021-10-23.txt'
 path_plot = '/Users/hk/Desktop/LEMI/DEP-LPS/Linear EK/analysis'

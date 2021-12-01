@@ -15,40 +15,72 @@ import pandas as pd
 import copy
 import trackpy as tp
 
-@pims.pipeline
-def trans_contrast(frame, q1=0.3, q2=0.995):
+def str2df(s, date):
     """
-    Transforms a sequence of image to have a higher constrast
-    
+    Extracts info from a filename .tif of a string, delmited by _
+
     Parameters
     ----------
-    frame : PIMS frame object
-        image sequence.
-    q1 : float, between 0 and 1
-        first quantile for lower bound. The default is 0.3.
-    q2 : float, between 0 and 1
-        second quantile for upper bound. The default is 0.995.
-
+    s : string. filename
+    date : string. date
+    
     Returns
     -------
-    frame2 : image sequende with a higher contrast
-
+    df : dataframe
+         infos extracted from filename
     """
-    frame2 = copy.deepcopy(frame);
-    m = round(len(frame)/2);
-    x = np.reshape(frame[m],(1,-1))[0];
-    a,b,c = plt.hist(x,bins=255,density=True,range=(0,255),histtype='step',cumulative=True);
-    thre1 = np.where(a<q1)[0][-1];
-    sz2 = len(np.where(a>=q2)[0]);
-    thre2 = np.where(a>=q2)[0][round(sz2*0.9)];
+    i = 0
+    j1 = 0 # read begins
+    j2 = 0 # read ends
+    l = [] # list of reads
+    while s[i]!='.':
+        if s[i]=='_':
+            l = l + [s[j1:j2+1]]
+            j1 = i+1
+        else:
+            j2 = i
+        i = i+1
+    df = pd.DataFrame({
+        'date': [date], 'channel': [int(l[2][2:])], 'cond': [l[0]], 
+        'rep': [int(l[1][1])], 'voltage': [l[4][:-1]],
+        'fps':[10], 'front':[0], 'back':[0]
+    })
+    return df
+
+@pims.pipeline
+# def trans_contrast(frame, q1=0.3, q2=0.995):
+#     """
+#     Transforms a sequence of image to have a higher constrast
     
-    for i in range(len(frame)):
-        frame2[i][frame[i]<thre1] = thre1;
-        frame2[i][frame[i]>thre2] = thre2;
-        temp = (frame2[i] - thre1) / (thre2 - thre1) * 255;
-        temp = np.around(temp);
-        frame2[i] = temp.astype(np.uint16);
-    return frame2
+#     Parameters
+#     ----------
+#     frame : PIMS frame object
+#         image sequence.
+#     q1 : float, between 0 and 1
+#         first quantile for lower bound. The default is 0.3.
+#     q2 : float, between 0 and 1
+#         second quantile for upper bound. The default is 0.995.
+
+#     Returns
+#     -------
+#     frame2 : image sequende with a higher contrast
+
+#     """
+#     frame2 = copy.deepcopy(frame);
+#     m = round(len(frame)/2);
+#     x = np.reshape(frame[m],(1,-1))[0];
+#     a,b,c = plt.hist(x,bins=255,density=True,range=(0,255),histtype='step',cumulative=True);
+#     thre1 = np.where(a<q1)[0][-1];
+#     sz2 = len(np.where(a>=q2)[0]);
+#     thre2 = np.where(a>=q2)[0][round(sz2*0.9)];
+    
+#     for i in range(len(frame)):
+#         frame2[i][frame[i]<thre1] = thre1;
+#         frame2[i][frame[i]>thre2] = thre2;
+#         temp = (frame2[i] - thre1) / (thre2 - thre1) * 255;
+#         temp = np.around(temp);
+#         frame2[i] = temp.astype(np.uint16);
+#     return frame2
 
 def pile(frame, diam, topn):
     """
@@ -387,11 +419,11 @@ def each_particle(tr_v, vol_init=10, ramp_rate=0):
         if len(tr_v['time'][ind]) > 4: # collects only when observed more than 4 frames
             ind2 = tr_v['time'][ind]!=min(tr_v['time'][ind])
             par = i # particle no
-            t0 = min(tr_v['time'][ind])
-            t1 = max(tr_v['time'][ind])
+            t0 = min(tr_v['time'][ind2])
+            t1 = max(tr_v['time'][ind2])
             t_a = (t0 + t1) / 2 # time [sec]
             dur = t1 - t0 # duration [sec]
-            vel = np.mean(tr_v['v_y'][ind]) # velocity [µm/s]
+            vel = np.mean(tr_v['v_y'][ind2]) # velocity [µm/s]
             vol = t_a * ramp_rate + vol_init # voltage, mutlplied by ramp rate [V]
             mob = vel / (vol/l) * 1e-6 # mobility, [m2/s-V]
             zet = mob * eta / (eps_r * eps_0) # zeta potential, [V]
