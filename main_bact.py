@@ -2,9 +2,11 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 """
-Last modified on Oct 30 2021
+Last modified on Nov 30 2021
 
-For LPS-DEP project. Updates include 1) file path, 2) noise reduction for bacterial cell tracking
+For LPS-DEP project. Updates --
+Oct 30: 1) file path, 2) noise reduction for bacterial cell tracking
+Nov 30: Added a cell that reads a list of files in directory to create 'info.txt'
 
 @author: Hyu Kim (hskimm@mit.edu)
 """
@@ -20,9 +22,30 @@ import trackpy as tp
 import time
 
 # from trackpy.sub import _
-
 # %%
-path_info = '/Users/hk/Desktop/LEMI/DEP-LPS/Linear EK/info.txt'
+"""
+Reads a list of files in a directory and creates a draft 'info.txt'
+format as '[treatment]_[replicate]_[channel]_[fluorescence]_[voltage]_[magnification]_[run_no].ome.tif'
+"""
+exp_date = '2021-11-10'
+path_dir = '/Volumes/LEMI_HK/LPS-DEP/' + exp_date + '/tif'
+l = os.listdir(path_dir)
+
+# remove unnecessary elements
+ind = 0
+while ind<len(l):
+    if l[ind][0:2]=='._':
+        del l[ind]
+    else:
+        ind = ind+1
+
+# create and add video info
+info = pd.DataFrame(columns=['date','channel','cond','rep','voltage','fps','front','back'])
+for ind in range(len(l)):
+    chl = l[ind]
+    new_row = {'date':exp_date, 'channel':}
+# %%
+path_info = '/Users/hk/Desktop/LEMI/DEP-LPS/Linear EK/info_2021-10-23.txt'
 path_plot = '/Users/hk/Desktop/LEMI/DEP-LPS/Linear EK/analysis'
 info = pd.read_csv(path_info, delimiter=',', header=0)
 # np.loadtxt(csv_path, delimiter=',', skiprows=1, usecols=x_cols)
