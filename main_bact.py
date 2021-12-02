@@ -21,8 +21,6 @@ import sub,sub2, pims
 import trackpy as tp
 import time
 
-from trackpy.sub import binarize, binarize_batch
-
 # %%
 # Do not run if your info file is ready.
 """
@@ -52,51 +50,54 @@ info_dir = '/Users/hk/Desktop/LEMI/DEP-LPS/Linear EK/info_' + exp_date + '.txt'
 info.to_csv(info_dir, index = False)
 
 # %%
+exp_date = '2021-11-10'
 path_info = '/Users/hk/Desktop/LEMI/DEP-LPS/Linear EK/info_' + exp_date + '.txt'
 path_plot = '/Users/hk/Desktop/LEMI/DEP-LPS/Linear EK/analysis'
 info = pd.read_csv(path_info, delimiter=',', header=0)
 
 path_tif = '/Volumes/LEMI_HK/LPS-DEP/XXXX-XX-XX/adjusted'
-i = 0
-path_tif = path_tif.replace('XXXX-XX-XX',info.date[i])
-s = path_tif + '/' + '%s_R%d_Ch%02d_GFP_%02dV_20X_001.ome_v2.tif' % (info.cond[i], info.rep[i], info.channel[i], info.voltage[i])
-frame = pims.open(s)
+for i in [0,1,2,3]:
+    path_tif = path_tif.replace('XXXX-XX-XX',info.date[i])
+    s = path_tif + '/' + '%s_R%d_Ch%02d_GFP_%02dV_20X_001.ome_v2.tif' % (info.cond[i], info.rep[i], info.channel[i], info.voltage[i])
+    frame = pims.open(s)
 
-t1 = time.time()
-mid = (info.front[i] + info.back[i])//2
-b, cnt = sub.binarize(frame[i])
-frame2, _ = sub.binarize_batch(frame) # for validating tp.annotate
-f = sub.pile(frame[1:], topn=cnt//2) # exclude the first frame it has been subtracted to remove background
+    t1 = time.time()
+    mid = (info.front[i] + info.back[i])//2
+    b, cnt = sub.binarize(frame[mid])
+    frame2, _ = sub.binarize_batch(frame) # for validating tp.annotate
 
-pred = tp.predict.NearestVelocityPredict()
-tr = pd.concat(pred.link_df_iter(f, search_range=25))
-# tr = tp.link(f, 50); # not anymore
-# tr = tr[(tr['x'] < x_hi) & (tr['x'] > x_lo)]; # not recommended to use
+    f = pile(frame[1:], topn=cnt//2) # exclude the first frame it has been subtracted to remove background
+    # tp.annotate(f[100], frame2[100]) # run this to check if cells were properly detected
 
-tr = sub.filter_ephemeral(tr, thres=5)
+    pred = tp.predict.NearestVelocityPredict()
+    tr = pd.concat(pred.link_df_iter(f, search_range=25))
+    # tr = tp.link(f, 50); # not anymore
+    # tr = tr[(tr['x'] < x_hi) & (tr['x'] > x_lo)]; # not recommended to use
 
-tr_v = sub.get_v(tr)
-# sub.plot_tr_v(tr_v)
+    tr = sub.filter_ephemeral(tr, thres=5)
 
-t2 = time.time();
-print("elapsed : %s sec" % (t2-t1))
+    tr_v = sub.get_v(tr)
+    # sub.plot_tr_v(tr_v)
 
-tr_v2 = sub.filter_v(tr_v, xlim=10, ylim1=20, ylim2=-10, direction=True)
-sub.plot_tr_v(tr_v2)
+    t2 = time.time()
+    print("elapsed : %s sec" % (t2-t1))
 
-info = pd.read_csv(path_info, delimiter=',', header=0) # update info
-tr_v3 = sub.convert_tr(tr_v2, front=info.values[i,-2], back=info.values[i,-1])
+    tr_v2 = sub.filter_v(tr_v, xlim=10, ylim1=info.voltage[i], ylim2=-10, direction=True)
+    sub.plot_tr_v(tr_v2)
 
-tr_av = sub.each_particle(tr_v3, vol_init=info.voltage[i])
+    info = pd.read_csv(path_info, delimiter=',', header=0) # update info
+    tr_v3 = sub.convert_tr(tr_v2, front=info.front[i], back=info.back[i], rate_time=1/info.fps[i])
 
-mu, tr_av2 = sub2.k_means(tr_av['mobility'])
+    tr_av = sub.each_particle(tr_v3, vol_init=info.voltage[i])
 
-# %% Export to comma delimited text file
-path_sav = '/Users/hk/Desktop/LEMI/DEP-LPS/Linear EK/analysis/' + exp_date + '/'
-tr_sav = pd.DataFrame(data = tr_av2, columns=['mobility'])
-# tr_sav = get_tr_sav(tr_av, ind, info)   #ignore in this updated version 
-s = path_sav + '%s_R%d_Ch%02d_GFP_%02dV_20X_001.ome.csv' % (info.cond[i], info.rep[i], info.channel[i], info.voltage[i])
-tr_sav.to_csv(s, index = False)
+    mu, tr_av2 = sub2.k_means(tr_av['mobility'])
+
+    # %% Export to comma delimited text file
+    path_sav = '/Users/hk/Desktop/LEMI/DEP-LPS/Linear EK/analysis/' + exp_date + '/'
+    tr_sav = pd.DataFrame(data = tr_av2, columns=['mobility'])
+    # tr_sav = get_tr_sav(tr_av, ind, info)   #ignore in this updated version 
+    s = path_sav + '%s_R%d_Ch%02d_GFP_%02dV_20X_001.ome.csv' % (info.cond[i], info.rep[i], info.channel[i], info.voltage[i])
+    tr_sav.to_csv(s, index = False)
 
 # %%
 # sub.plot_v2(v2, path_plot, plotinfo='%s_R%d_%s' % (info.values[i,2], info.values[i,3], info.values[i,0]))

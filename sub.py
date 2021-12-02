@@ -312,34 +312,6 @@ def plot_v_quantile(tr_v, s):
     # plt.grid();
     return v
 
-def convert_vy(v, front, back, rate_time=0.138, rate_space=1.288):
-    """
-    Trims starting / ending frames. Converts units in time / space
-
-    Parameters
-    ----------
-    v : np array
-        list of v_y statistics per frame [px/frame]
-    front : numeric
-        initial frame number to include.
-    back : numeric
-        last frame number to include.
-    rate_time : float
-        conversion factor [s/frame]
-    rate_space : float
-        conversion factor [µm/px]
-
-    Returns
-    -------
-    v2 : array
-        converted v_y.
-
-    """
-    v = v[front:back+1] * rate_space / rate_time;
-    t = np.array(range(len(v))) * rate_time;
-    v2 = np.hstack((np.transpose([t]), np.transpose([-v])));
-    return v2
-
 def convert_tr(tr_v, front, back, rate_time=0.138, rate_space=1.288):
     """
     Trims the first and last frames and convert units in time / space
@@ -425,11 +397,11 @@ def each_particle(tr_v, vol_init=10, ramp_rate=0):
         if len(tr_v['time'][ind]) > 4: # collects only when observed more than 4 frames
             ind2 = tr_v['time'][ind]!=min(tr_v['time'][ind])
             par = i # particle no
-            t0 = min(tr_v['time'][ind2])
-            t1 = max(tr_v['time'][ind2])
+            t0 = min(tr_v.time[ind][ind2])
+            t1 = max(tr_v['time'][ind][ind2])
             t_a = (t0 + t1) / 2 # time [sec]
             dur = t1 - t0 # duration [sec]
-            vel = np.mean(tr_v['v_y'][ind2]) # velocity [µm/s]
+            vel = np.mean(tr_v['v_y'][ind][ind2]) # velocity [µm/s]
             vol = t_a * ramp_rate + vol_init # voltage, mutlplied by ramp rate [V]
             mob = vel / (vol/l) * 1e-6 # mobility, [m2/s-V]
             zet = mob * eta / (eps_r * eps_0) # zeta potential, [V]
@@ -497,3 +469,31 @@ def get_tr_sav(tr_av, ind, info):
 #         temp = np.around(temp);
 #         frame2[i] = temp.astype(np.uint16);
 #     return frame2
+
+def convert_vy(v, front, back, rate_time=0.138, rate_space=1.288):
+    """
+    Trims starting / ending frames. Converts units in time / space
+
+    Parameters
+    ----------
+    v : np array
+        list of v_y statistics per frame [px/frame]
+    front : numeric
+        initial frame number to include.
+    back : numeric
+        last frame number to include.
+    rate_time : float
+        conversion factor [s/frame]
+    rate_space : float
+        conversion factor [µm/px]
+
+    Returns
+    -------
+    v2 : array
+        converted v_y.
+
+    """
+    v = v[front:back+1] * rate_space / rate_time;
+    t = np.array(range(len(v))) * rate_time;
+    v2 = np.hstack((np.transpose([t]), np.transpose([-v])));
+    return v2
