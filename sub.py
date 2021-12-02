@@ -242,8 +242,8 @@ def filter_v(tr_v, xlim=5, ylim1=5, ylim2=-35, direction=True):
 
     """
     if not direction:
-        tr_v['v_y'] = -tr_v['v_y'];
-    tr_v2 = tr_v[(abs(tr_v['v_x'])<xlim) & (tr_v['v_y']<ylim1) & (tr_v['v_y']>ylim2)];
+        tr_v['v_y'] = -tr_v['v_y']
+    tr_v2 = tr_v[(abs(tr_v['v_x'])<xlim) & (tr_v['v_y']<ylim1) & (tr_v['v_y']>ylim2)]
     # mpl.rc('figure',  figsize=(10, 10));
     # plt.figure();
     # plt.plot(tr_v2['v_x'], tr_v2['v_y'], 'b.', markersize=2);
