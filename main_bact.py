@@ -22,6 +22,7 @@ import trackpy as tp
 import time
 
 # %%
+# Do not run if your info file is ready.
 """
 Reads a list of files in a directory and creates a draft 'info.txt'
 format as '[treatment]_[replicate]_[channel]_[fluorescence]_[voltage]_[magnification]_[run_no].ome.tif'
@@ -46,22 +47,22 @@ for s in l:
 
 # export to txt file
 info_dir = '/Users/hk/Desktop/LEMI/DEP-LPS/Linear EK/info_' + exp_date + '.txt'
-info.to_csv(info, index = False)
+info.to_csv(info_dir, index = False)
 
 # %%
-path_info = '/Users/hk/Desktop/LEMI/DEP-LPS/Linear EK/info_2021-10-23.txt'
+# Run sub.py separately !
+path_info = '/Users/hk/Desktop/LEMI/DEP-LPS/Linear EK/info_' + exp_date + '.txt'
 path_plot = '/Users/hk/Desktop/LEMI/DEP-LPS/Linear EK/analysis'
 info = pd.read_csv(path_info, delimiter=',', header=0)
-# np.loadtxt(csv_path, delimiter=',', skiprows=1, usecols=x_cols)
 
-i = 3
 path_tif = '/Volumes/LEMI_HK/LPS-DEP/XXXX-XX-XX/adjusted'
-path_tif = path_tif.replace('XXXX-XX-XX',info.values[i,0])
+i = 0
+path_tif = path_tif.replace('XXXX-XX-XX',info.date[i])
 s = path_tif + '/' + '%s_R%d_Ch%02d_GFP_%02dV_20X_001.ome_v2.tif' % (info.cond[i], info.rep[i], info.channel[i], info.voltage[i])
 frame = pims.open(s)
 
 t1 = time.time()
-f = sub.pile(frame[1:], diam=25, topn=10) # exclude the first frame it has been subtracted to remove background
+f = pile(frame[1:], topn=30) # exclude the first frame it has been subtracted to remove background
 
 pred = tp.predict.NearestVelocityPredict()
 tr = pd.concat(pred.link_df_iter(f, search_range=25))
@@ -82,12 +83,12 @@ sub.plot_tr_v(tr_v2)
 info = pd.read_csv(path_info, delimiter=',', header=0) # update info
 tr_v3 = sub.convert_tr(tr_v2, front=info.values[i,-2], back=info.values[i,-1])
 
-tr_av = sub.each_particle(tr_v3, vol_init=15)
+tr_av = sub.each_particle(tr_v3, vol_init=info.voltage[i])
 
 mu, tr_av2 = sub2.k_means(tr_av['mobility'])
 
 # %% Export to comma delimited text file
-path_sav = '/Users/hk/Desktop/LEMI/DEP-LPS/Linear EK/analysis/'
+path_sav = '/Users/hk/Desktop/LEMI/DEP-LPS/Linear EK/analysis/' + exp_date + '/'
 tr_sav = pd.DataFrame(data = tr_av2, columns=['mobility'])
 # tr_sav = get_tr_sav(tr_av, ind, info)   #ignore in this updated version 
 s = path_sav + '%s_R%d_Ch%02d_GFP_%02dV_20X_001.ome.csv' % (info.cond[i], info.rep[i], info.channel[i], info.voltage[i])

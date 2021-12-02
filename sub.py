@@ -14,6 +14,8 @@ import pims
 import pandas as pd
 import copy
 import trackpy as tp
+from skimage import measure, filters
+# from skimage.filters import threshold_otsu
 
 def str2df(s, date):
     """
@@ -46,6 +48,12 @@ def str2df(s, date):
         'fps':[10], 'front':[0], 'back':[0]
     })
     return df
+
+def counter(frame):
+    # Otsu's thresholding
+    thresh = filters.threshold_otsu(frame)
+    binary = frame > thresh
+    labels = measure.label(blobs)
 
 @pims.pipeline
 # def trans_contrast(frame, q1=0.3, q2=0.995):
@@ -82,7 +90,7 @@ def str2df(s, date):
 #         frame2[i] = temp.astype(np.uint16);
 #     return frame2
 
-def pile(frame, diam, topn):
+def pile(frame, diam=15, topn=None, minmass=100):
     """
     same as the function batch. Designed to work faster
     
@@ -97,12 +105,12 @@ def pile(frame, diam, topn):
     tupule of frames
 
     """
-    f = tp.locate(frame[0], diam, invert=False, topn=topn);
-    f_tup = (f,);
+    f = tp.locate(frame[0], diam, invert=False, topn=topn, minmass=minmass)
+    f_tup = (f,)
     for i in range(len(frame)-1):
-        f_tmp = tp.locate(frame[i+1], diam, invert=False, topn=topn);
+        f_tmp = tp.locate(frame[i+1], diam, invert=False, topn=topn, minmass=minmass)
         # f = pd.concat([f, f_tmp]);
-        f_tup = f_tup + (f_tmp,);
+        f_tup = f_tup + (f_tmp,)
     return f_tup
 
 def trshow(tr, first_style='bo', last_style='gs', style='b.'):
