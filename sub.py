@@ -49,48 +49,46 @@ def str2df(s, date):
     })
     return df
 
-def counter(frame):
-    # Otsu's thresholding
-    thresh = filters.threshold_otsu(frame)
-    binary = frame > thresh
-    labels = measure.label(blobs)
+def binarize(frame, sigma=2):
+    """
+    Otsu's thresholding after gaussian filter
+
+    Parameters
+    ----------
+    frame : array / PIMS frame object
+            An image to binarize (bw)
+    
+    Returns
+    -------
+    binary : array
+             Binarized image
+    n : integer
+        Number of counts
+    """
+    frame2 = filters.gaussian(frame, sigma=sigma)
+    thresh = filters.threshold_otsu(frame2)
+    binary = frame2 > thresh
+    labels = measure.label(binary)
+    n = np.amax(labels)
+    
+    return binary, n
+
+def binarize_batch(frames, sigma=2, front=0, back=200):
+    """
+    Binarizes multiple images for smoother cell tracking
+    Not likely to be used (incompatible with function "tp.locate")
+    """
+    frames_b = []
+    for i in range(len(frames)):
+        b, n = binarize(frames[i], sigma=sigma)
+        b = b*255
+        frames_b = frames_b + [b]
+    b, n = binarize(frames[(front+back)//2], sigma=sigma)
+
+    return frames_b, n
 
 @pims.pipeline
-# def trans_contrast(frame, q1=0.3, q2=0.995):
-#     """
-#     Transforms a sequence of image to have a higher constrast
-    
-#     Parameters
-#     ----------
-#     frame : PIMS frame object
-#         image sequence.
-#     q1 : float, between 0 and 1
-#         first quantile for lower bound. The default is 0.3.
-#     q2 : float, between 0 and 1
-#         second quantile for upper bound. The default is 0.995.
-
-#     Returns
-#     -------
-#     frame2 : image sequende with a higher contrast
-
-#     """
-#     frame2 = copy.deepcopy(frame);
-#     m = round(len(frame)/2);
-#     x = np.reshape(frame[m],(1,-1))[0];
-#     a,b,c = plt.hist(x,bins=255,density=True,range=(0,255),histtype='step',cumulative=True);
-#     thre1 = np.where(a<q1)[0][-1];
-#     sz2 = len(np.where(a>=q2)[0]);
-#     thre2 = np.where(a>=q2)[0][round(sz2*0.9)];
-    
-#     for i in range(len(frame)):
-#         frame2[i][frame[i]<thre1] = thre1;
-#         frame2[i][frame[i]>thre2] = thre2;
-#         temp = (frame2[i] - thre1) / (thre2 - thre1) * 255;
-#         temp = np.around(temp);
-#         frame2[i] = temp.astype(np.uint16);
-#     return frame2
-
-def pile(frame, diam=15, topn=None, minmass=100):
+def pile(frame, diam=15, topn=None, minmass=None):
     """
     same as the function batch. Designed to work faster
     
@@ -465,3 +463,37 @@ def get_tr_sav(tr_av, ind, info):
         tr_sav = pd.concat([tr_sav, tup], axis=0)
 
     return tr_sav
+
+# def trans_contrast(frame, q1=0.3, q2=0.995):
+#     """
+#     Transforms a sequence of image to have a higher constrast
+    
+#     Parameters
+#     ----------
+#     frame : PIMS frame object
+#         image sequence.
+#     q1 : float, between 0 and 1
+#         first quantile for lower bound. The default is 0.3.
+#     q2 : float, between 0 and 1
+#         second quantile for upper bound. The default is 0.995.
+
+#     Returns
+#     -------
+#     frame2 : image sequende with a higher contrast
+
+#     """
+#     frame2 = copy.deepcopy(frame);
+#     m = round(len(frame)/2);
+#     x = np.reshape(frame[m],(1,-1))[0];
+#     a,b,c = plt.hist(x,bins=255,density=True,range=(0,255),histtype='step',cumulative=True);
+#     thre1 = np.where(a<q1)[0][-1];
+#     sz2 = len(np.where(a>=q2)[0]);
+#     thre2 = np.where(a>=q2)[0][round(sz2*0.9)];
+    
+#     for i in range(len(frame)):
+#         frame2[i][frame[i]<thre1] = thre1;
+#         frame2[i][frame[i]>thre2] = thre2;
+#         temp = (frame2[i] - thre1) / (thre2 - thre1) * 255;
+#         temp = np.around(temp);
+#         frame2[i] = temp.astype(np.uint16);
+#     return frame2

@@ -21,6 +21,8 @@ import sub,sub2, pims
 import trackpy as tp
 import time
 
+from trackpy.sub import binarize, binarize_batch
+
 # %%
 # Do not run if your info file is ready.
 """
@@ -50,7 +52,6 @@ info_dir = '/Users/hk/Desktop/LEMI/DEP-LPS/Linear EK/info_' + exp_date + '.txt'
 info.to_csv(info_dir, index = False)
 
 # %%
-# Run sub.py separately !
 path_info = '/Users/hk/Desktop/LEMI/DEP-LPS/Linear EK/info_' + exp_date + '.txt'
 path_plot = '/Users/hk/Desktop/LEMI/DEP-LPS/Linear EK/analysis'
 info = pd.read_csv(path_info, delimiter=',', header=0)
@@ -62,7 +63,10 @@ s = path_tif + '/' + '%s_R%d_Ch%02d_GFP_%02dV_20X_001.ome_v2.tif' % (info.cond[i
 frame = pims.open(s)
 
 t1 = time.time()
-f = pile(frame[1:], topn=30) # exclude the first frame it has been subtracted to remove background
+mid = (info.front[i] + info.back[i])//2
+b, cnt = sub.binarize(frame[i])
+frame2, _ = sub.binarize_batch(frame) # for validating tp.annotate
+f = sub.pile(frame[1:], topn=cnt//2) # exclude the first frame it has been subtracted to remove background
 
 pred = tp.predict.NearestVelocityPredict()
 tr = pd.concat(pred.link_df_iter(f, search_range=25))
