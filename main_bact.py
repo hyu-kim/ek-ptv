@@ -57,7 +57,7 @@ path_plot = '/Users/hk/Desktop/LEMI/DEP-LPS/Linear EK/analysis'
 info = pd.read_csv(path_info, delimiter=',', header=0)
 
 path_tif = '/Volumes/LEMI_HK/LPS-DEP/XXXX-XX-XX/adjusted'
-for i in [0]:
+for i in range(38,42):
     path_tif = path_tif.replace('XXXX-XX-XX',info.date[i])
     s = path_tif + '/' + '%s_R%d_Ch%02d_GFP_%02dV_20X_001.ome_v2.tif' % (info.cond[i], info.rep[i], info.channel[i], info.voltage[i])
     frame = pims.open(s)
@@ -68,6 +68,7 @@ for i in [0]:
     frame2, _ = sub.binarize_batch(frame) # for validating tp.annotate
 
     f = pile(frame[1:], topn=cnt//2) # exclude the first frame it has been subtracted to remove background
+    # f = pile(frame[1:], topn=5) # use this when cell number is too low (i.e. wrong cnt)
     # tp.annotate(f[100], frame2[100]) # run this to check if cells were properly detected
 
     pred = tp.predict.NearestVelocityPredict()
@@ -98,7 +99,7 @@ for i in [0]:
     tr_sav = pd.DataFrame(data = tr_av_vel, columns=['velocity'])
     # tr_sav = get_tr_sav(tr_av, ind, info)   #ignore in this updated version 
     s = path_sav + '%s_R%d_Ch%02d_GFP_%02dV_20X_001.ome.csv' % (info.cond[i], info.rep[i], info.channel[i], info.voltage[i])
-    # tr_sav.to_csv(s, index = False)
+    tr_sav.to_csv(s, index = False)
 
 # %%
 # sub.plot_v2(v2, path_plot, plotinfo='%s_R%d_%s' % (info.values[i,2], info.values[i,3], info.values[i,0]))
