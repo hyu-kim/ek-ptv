@@ -7,6 +7,7 @@ Last modified on Nov 30 2021
 For LPS-DEP project. Updates --
 Oct 30: 1) file path, 2) noise reduction for bacterial cell tracking
 Nov 30: Added a cell that reads a list of files in directory to create 'info.txt'
+Dec 04: Use v_y instead of mobility for export
 
 @author: Hyu Kim (hskimm@mit.edu)
 """
@@ -56,7 +57,7 @@ path_plot = '/Users/hk/Desktop/LEMI/DEP-LPS/Linear EK/analysis'
 info = pd.read_csv(path_info, delimiter=',', header=0)
 
 path_tif = '/Volumes/LEMI_HK/LPS-DEP/XXXX-XX-XX/adjusted'
-for i in [0,1,2,3]:
+for i in [0]:
     path_tif = path_tif.replace('XXXX-XX-XX',info.date[i])
     s = path_tif + '/' + '%s_R%d_Ch%02d_GFP_%02dV_20X_001.ome_v2.tif' % (info.cond[i], info.rep[i], info.channel[i], info.voltage[i])
     frame = pims.open(s)
@@ -90,14 +91,14 @@ for i in [0,1,2,3]:
 
     tr_av = sub.each_particle(tr_v3, vol_init=info.voltage[i])
 
-    mu, tr_av2 = sub2.k_means(tr_av['mobility'])
+    mu, tr_av_vel = sub2.k_means(tr_av['velocity'])
 
     # %% Export to comma delimited text file
     path_sav = '/Users/hk/Desktop/LEMI/DEP-LPS/Linear EK/analysis/' + exp_date + '/'
-    tr_sav = pd.DataFrame(data = tr_av2, columns=['mobility'])
+    tr_sav = pd.DataFrame(data = tr_av_vel, columns=['velocity'])
     # tr_sav = get_tr_sav(tr_av, ind, info)   #ignore in this updated version 
     s = path_sav + '%s_R%d_Ch%02d_GFP_%02dV_20X_001.ome.csv' % (info.cond[i], info.rep[i], info.channel[i], info.voltage[i])
-    tr_sav.to_csv(s, index = False)
+    # tr_sav.to_csv(s, index = False)
 
 # %%
 # sub.plot_v2(v2, path_plot, plotinfo='%s_R%d_%s' % (info.values[i,2], info.values[i,3], info.values[i,0]))
