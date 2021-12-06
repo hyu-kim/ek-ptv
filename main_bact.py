@@ -51,15 +51,15 @@ info_dir = '/Users/hk/Desktop/LEMI/DEP-LPS/Linear EK/info_' + exp_date + '.txt'
 info.to_csv(info_dir, index = False)
 
 # %%
-exp_date = '2021-11-10'
+exp_date = '2021-12-05'
 path_info = '/Users/hk/Desktop/LEMI/DEP-LPS/Linear EK/info_' + exp_date + '.txt'
 path_plot = '/Users/hk/Desktop/LEMI/DEP-LPS/Linear EK/analysis'
 info = pd.read_csv(path_info, delimiter=',', header=0)
 
 path_tif = '/Volumes/LEMI_HK/LPS-DEP/XXXX-XX-XX/adjusted'
-for i in range(38,42):
+for i in range(15):
     path_tif = path_tif.replace('XXXX-XX-XX',info.date[i])
-    s = path_tif + '/' + '%s_R%d_Ch%02d_GFP_%02dV_20X_001.ome_v2.tif' % (info.cond[i], info.rep[i], info.channel[i], info.voltage[i])
+    s = path_tif + '/' + '%s_R%d_Ch%02d_GFP_%02dV_20X_001.ome.tif' % (info.cond[i], info.rep[i], info.channel[i], info.voltage[i])
     frame = pims.open(s)
 
     t1 = time.time()
