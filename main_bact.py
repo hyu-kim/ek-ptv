@@ -23,34 +23,6 @@ import trackpy as tp
 import time
 
 # %%
-# Do not run if your info file is ready.
-"""
-Reads a list of files in a directory and creates a draft 'info.txt'
-format as '[treatment]_[replicate]_[channel]_[fluorescence]_[voltage]_[magnification]_[run_no].ome.tif'
-"""
-exp_date = '2021-11-10'
-path_dir = '/Volumes/LEMI_HK/LPS-DEP/' + exp_date + '/tif'
-l = os.listdir(path_dir)
-
-# remove unnecessary elements
-ind = 0
-while ind<len(l):
-    if l[ind][0:2]=='._':
-        del l[ind]
-    else:
-        ind = ind+1
-
-# create and add video info
-info = pd.DataFrame(columns=['date','channel','cond','rep','voltage','fps','front','back'])
-for s in l:
-    new_row = sub.str2df(s, exp_date)
-    info = info.append(new_row)
-
-# export to txt file
-info_dir = '/Users/hk/Desktop/LEMI/DEP-LPS/Linear EK/info_' + exp_date + '.txt'
-info.to_csv(info_dir, index = False)
-
-# %%
 exp_date = '2021-12-05'
 path_info = '/Users/hk/Desktop/LEMI/DEP-LPS/Linear EK/info_' + exp_date + '.txt'
 path_plot = '/Users/hk/Desktop/LEMI/DEP-LPS/Linear EK/analysis'
