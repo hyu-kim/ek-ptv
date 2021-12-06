@@ -23,13 +23,13 @@ import trackpy as tp
 import time
 
 # %%
-exp_date = '2021-12-05'
+exp_date = '2021-12-06'
 path_info = '/Users/hk/Desktop/LEMI/DEP-LPS/Linear EK/info_' + exp_date + '.txt'
 path_plot = '/Users/hk/Desktop/LEMI/DEP-LPS/Linear EK/analysis'
 info = pd.read_csv(path_info, delimiter=',', header=0)
 
 path_tif = '/Volumes/LEMI_HK/LPS-DEP/XXXX-XX-XX/adjusted'
-for i in range(15):
+for i in [0,1,2,3,27,28,29,30,31]:
     path_tif = path_tif.replace('XXXX-XX-XX',info.date[i])
     s = path_tif + '/' + '%s_R%d_Ch%02d_GFP_%02dV_20X_001.ome.tif' % (info.cond[i], info.rep[i], info.channel[i], info.voltage[i])
     frame = pims.open(s)
@@ -72,6 +72,3 @@ for i in range(15):
     # tr_sav = get_tr_sav(tr_av, ind, info)   #ignore in this updated version 
     s = path_sav + '%s_R%d_Ch%02d_GFP_%02dV_20X_001.ome.csv' % (info.cond[i], info.rep[i], info.channel[i], info.voltage[i])
     tr_sav.to_csv(s, index = False)
-
-# %%
-# sub.plot_v2(v2, path_plot, plotinfo='%s_R%d_%s' % (info.values[i,2], info.values[i,3], info.values[i,0]))
