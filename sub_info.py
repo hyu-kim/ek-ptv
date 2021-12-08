@@ -37,7 +37,7 @@ def str2df(s, date):
     })
     return df
 
-def create_info(exp_date='2021-11-10', path='/Volumes/LEMI_HK/LPS-DEP/'):
+def create_info(exp_date='2021-11-10', path='/Volumes/LEMI_HK/LPS-DEP/', path_out='/Users/hk/Desktop/LEMI/DEP-LPS/Linear EK/'):
     """
     Reads a list of files in a directory and creates a draft 'info.txt'
     format as '[treatment]_[replicate]_[channel]_[fluorescence]_[voltage]_[magnification]_[run_no].ome.tif'
@@ -65,7 +65,7 @@ def create_info(exp_date='2021-11-10', path='/Volumes/LEMI_HK/LPS-DEP/'):
         info = info.append(new_row)
 
     # export to txt file
-    info_dir = '/Users/hk/Desktop/LEMI/DEP-LPS/Linear EK/info_' + exp_date + '.txt'
+    info_dir = path_out + 'info_' + exp_date + '.txt'
     info.to_csv(info_dir, index = False)
 
 def write_fps(exp_date='2021-11-10', path='/Volumes/LEMI_HK/LPS-DEP/'):
@@ -81,9 +81,9 @@ def write_fps(exp_date='2021-11-10', path='/Volumes/LEMI_HK/LPS-DEP/'):
     -------
     """
     path_info = '/Users/hk/Desktop/LEMI/DEP-LPS/Linear EK/info_' + exp_date + '.txt'
-    path_time = path + 'LPS-DEP/XXXX-XX-XX/time'
-    path_time.replace('XXXX-XX-XX',exp_date)
+    path_time = path + 'XXXX-XX-XX/time'
+    path_time = path_time.replace('XXXX-XX-XX',exp_date)
     info = pd.read_csv(path_info, delimiter=',', header=0)
     for i in range(len(info)):
         s = path_time + '/' + '%s_R%d_Ch%02d_GFP_%02dV_20X_001.txt' % (info.cond[i], info.rep[i], info.channel[i], info.voltage[i])
-        info_nd2 = 
+        info_nd2 = pd.read_csv(s, header=59, sep='\t')

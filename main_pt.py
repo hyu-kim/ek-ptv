@@ -2,12 +2,10 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 """
-Last modified on Dec 06 2021
+Last modified on Dec 08 2021
 
-For LPS-DEP project. Updates --
-Oct 30: 1) file path, 2) noise reduction for bacterial cell tracking
-Nov 30: Added a cell that reads a list of files in directory to create 'info.txt'
-Dec 04: Use v_y instead of mobility for export
+For LLNL EK project. Updates --
+Dec 08: Duplicated from 'main_bact.py'. Updated path info.
 
 @author: Hyu Kim (hskimm@mit.edu)
 """
@@ -23,13 +21,13 @@ import trackpy as tp
 import time
 
 # %%
-exp_date = '2021-12-06'
-path_info = '/Users/hk/Desktop/LEMI/DEP-LPS/Linear EK/info_' + exp_date + '.txt'
-path_plot = '/Users/hk/Desktop/LEMI/DEP-LPS/Linear EK/analysis'
+exp_date = '2021-11-29'
+path_info = '/Users/hk/Desktop/LEMI/SFA/Electrokinetics/' + exp_date + ' Pt mobility 2/' + 'info_' + exp_date + '.txt'
+path_plot = '/Users/hk/Desktop/LEMI/SFA/Electrokinetics/' + exp_date + ' Pt mobility 2/analysis'
 info = pd.read_csv(path_info, delimiter=',', header=0)
 
-path_tif = '/Volumes/LEMI_HK/LPS-DEP/XXXX-XX-XX/adjusted'
-for i in [0,1,2,3,27,28,29,30,31]:
+path_tif = '/Volumes/LEMI_HK/LLNL-BioSFA/EK/XXXX-XX-XX/adjusted'
+for i in range(len(info)):
     path_tif = path_tif.replace('XXXX-XX-XX',info.date[i])
     s = path_tif + '/' + '%s_R%d_Ch%02d_GFP_%02dV_20X_001.ome.tif' % (info.cond[i], info.rep[i], info.channel[i], info.voltage[i])
     frame = pims.open(s)
