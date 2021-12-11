@@ -17,37 +17,7 @@ import trackpy as tp
 from skimage import measure, filters
 # from skimage.filters import threshold_otsu
 
-def str2df(s, date):
-    """
-    Extracts info from a filename .tif of a string, delmited by _
 
-    Parameters
-    ----------
-    s : string. filename
-    date : string. date
-    
-    Returns
-    -------
-    df : dataframe
-         infos extracted from filename
-    """
-    i = 0
-    j1 = 0 # read begins
-    j2 = 0 # read ends
-    l = [] # list of reads
-    while s[i]!='.':
-        if s[i]=='_':
-            l = l + [s[j1:j2+1]]
-            j1 = i+1
-        else:
-            j2 = i
-        i = i+1
-    df = pd.DataFrame({
-        'date': [date], 'channel': [int(l[2][2:])], 'cond': [l[0]], 
-        'rep': [int(l[1][1])], 'voltage': [l[4][:-1]],
-        'fps':[10], 'front':[0], 'back':[0]
-    })
-    return df
 
 def binarize(frame, sigma=2):
     """
@@ -380,8 +350,8 @@ def each_particle(tr_v, vol_init=10, ramp_rate=0):
                 increase rate of voltage by time (V/s). Default by zero
     Returns
     -------
-    tr_zeta : Dataframe
-              mean velocity and zeta potential for each particle (averaged by sequence frames)
+    tr_avg : Dataframe
+             calculation for each particle appearing in a sequence of frames
     """
     # constants
     eps_r = 80; # relative permitivity []

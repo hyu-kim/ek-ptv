@@ -57,6 +57,7 @@ def create_info(exp_date='2021-11-10', path='/Volumes/LEMI_HK/LPS-DEP/', path_ou
             del l[ind]
         else:
             ind = ind+1
+    l.sort()
 
     # create and add video info
     info = pd.DataFrame(columns=['date','channel','cond','rep','voltage','fps','front','back'])

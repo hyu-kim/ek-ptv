@@ -23,13 +23,13 @@ import time
 # %%
 exp_date = '2021-11-29'
 path_info = '/Users/hk/Desktop/LEMI/SFA/Electrokinetics/' + exp_date + ' Pt mobility 2/' + 'info_' + exp_date + '.txt'
-path_plot = '/Users/hk/Desktop/LEMI/SFA/Electrokinetics/' + exp_date + ' Pt mobility 2/analysis'
+path_plot = '/Users/hk/Desktop/LEMI/SFA/Electrokinetics/' + exp_date + ' Pt mobility 2/analysis/'
 info = pd.read_csv(path_info, delimiter=',', header=0)
 
-path_tif = '/Volumes/LEMI_HK/LLNL-BioSFA/EK/XXXX-XX-XX/adjusted'
-for i in range(len(info)):
+path_tif = '/Volumes/LEMI_HK/LLNL BioSFA/EK/XXXX-XX-XX/adjusted'
+for i in range(1,18):
     path_tif = path_tif.replace('XXXX-XX-XX',info.date[i])
-    s = path_tif + '/' + '%s_R%d_Ch%02d_GFP_%02dV_20X_001.ome.tif' % (info.cond[i], info.rep[i], info.channel[i], info.voltage[i])
+    s = path_tif + '/' + '%s_R%d_Ch%02d_TR_%02dV_20X_001.ome.tif' % (info.cond[i], info.rep[i], info.channel[i], info.voltage[i])
     frame = pims.open(s)
 
     t1 = time.time()
@@ -65,7 +65,7 @@ for i in range(len(info)):
     mu, tr_av_vel = sub2.k_means(tr_av['velocity'])
 
     # %% Export to comma delimited text file
-    path_sav = '/Users/hk/Desktop/LEMI/DEP-LPS/Linear EK/analysis/' + exp_date + '/'
+    path_sav = path_plot + 'csv/'
     tr_sav = pd.DataFrame(data = tr_av_vel, columns=['velocity'])
     # tr_sav = get_tr_sav(tr_av, ind, info)   #ignore in this updated version 
     s = path_sav + '%s_R%d_Ch%02d_GFP_%02dV_20X_001.ome.csv' % (info.cond[i], info.rep[i], info.channel[i], info.voltage[i])
