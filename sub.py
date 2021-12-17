@@ -160,22 +160,27 @@ def get_v(tr):
         trace added with velocity
 
     """
-    tr_v = tr.copy();
-    tr_v['v_x'] = tr['ep'];
-    tr_v['v_y'] = tr['ep'];
+    tr_v = tr.copy()
+    tr_v['v_x'] = float('nan')
+    tr_v['v_y'] = float('nan')
     tr_v.frame = tr_v.frame - min(tr_v.frame)
-    fr = 0;
-    i_prev = min(tr['particle'])-1;
-    for i in tr['particle']:
-        if i==i_prev:
-            ind1 = (tr['particle']==i)&(tr['frame']==fr);
-            fr = fr+1;
-            ind2 = (tr['particle']==i)&(tr['frame']==fr);
-            tr_v.loc[ind2, 'v_x'] = tr_v['x'][ind2].values[0] - tr_v['x'][ind1].values[0];
-            tr_v.loc[ind2, 'v_y'] = tr_v['y'][ind2].values[0] - tr_v['y'][ind1].values[0];
-        else:
-            fr = min(tr['frame'][tr['particle']==i]);
-        i_prev = i;
+    fr = 0
+    i_prev = min(tr['particle'])-1
+
+    # convert tr['particle'] into a list containing non-repeating values (to avoid case issue in for loop below)
+    p_ext = []
+    [p_ext.append(x) for x in tr['particle'] if x not in p_ext]
+    p_ext.sort()
+
+    for i in p_ext:
+        fr = min(tr_v['frame'][tr_v['particle']==i])
+        for j in range(sum(tr_v['particle']==i)-1):
+            ind1 = (tr_v['particle']==i)&(tr_v['frame']==fr)
+            fr = fr + 1
+            ind2 = (tr_v['particle']==i)&(tr_v['frame']==fr)
+            tr_v.loc[ind2, 'v_x'] = tr_v['x'][ind2].values[0] - tr_v['x'][ind1].values[0]
+            tr_v.loc[ind2, 'v_y'] = tr_v['y'][ind2].values[0] - tr_v['y'][ind1].values[0]
+
     tr_v = tr_v[~np.isnan(tr_v['v_x'])]
     
     return tr_v
@@ -282,7 +287,7 @@ def plot_v_quantile(tr_v, s):
     # plt.grid();
     return v
 
-def convert_tr(tr_v, front, back, rate_time=0.138, rate_space=1.288):
+def convert_tr(tr_v, front, back, rate_time=0.1, rate_space=1): # default set to 10 fps and 20X with 3x3 binning
     """
     Trims the first and last frames and convert units in time / space
     

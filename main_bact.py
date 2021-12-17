@@ -2,13 +2,15 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 """
-Last run on Dec 11 2021
+Last run on Dec 17 2021
 
 For LPS-DEP project. Updates --
 Oct 30: 1) file path, 2) noise reduction for bacterial cell tracking
 Nov 30: Added a cell that reads a list of files in directory to create 'info.txt'
 Dec 04: Use v_y instead of mobility for export
 Dec 11: Export trace dataframe for record. Increase the upper cutoff filtering velocity range
+Dec 17: 1) updated module sub ("get_v" and "convert_tr")
+        2) Hold back using kmeans clustering -- as the mobility computed too high than expected
 
 @author: Hyu Kim (hskimm@mit.edu)
 """
@@ -30,15 +32,16 @@ path_plot = '/Users/hk/Desktop/LEMI/DEP-LPS/Linear EK/analysis'
 info = pd.read_csv(path_info, delimiter=',', header=0)
 
 path_tif = '/Volumes/LEMI_HK/LPS-DEP/XXXX-XX-XX/adjusted'
-for i in range(34,54):
+for i in range(44,54):
     path_tif = path_tif.replace('XXXX-XX-XX',info.date[i])
     s = path_tif + '/' + '%s_R%d_Ch%02d_GFP_%02dV_20X_001.ome.tif' % (info.cond[i], info.rep[i], info.channel[i], info.voltage[i])
+    # s = path_tif + '/' + '%s_R%d_Ch%02d_GFP_%02dV_20X_001.ome_test.tif' % (info.cond[i], info.rep[i], info.channel[i], info.voltage[i])
     frame = pims.open(s)
 
     t1 = time.time()
     mid = (info.front[i] + info.back[i])//2
     b, cnt = sub.binarize(frame[mid])
-    cnt = cnt * (cnt>=10) + 10 * (cnt<10)
+    cnt = cnt * ((cnt>=10) & (cnt<=200)) + 10 * ((cnt<10) | (cnt>200))
     frame2, _ = sub.binarize_batch(frame) # for validating tp.annotate
 
     f = pile(frame[1:], topn=cnt//2) # exclude the first frame it has been subtracted to remove background
@@ -47,9 +50,7 @@ for i in range(34,54):
 
     pred = tp.predict.NearestVelocityPredict()
     tr = pd.concat(pred.link_df_iter(f, search_range=25))
-    # tr = tp.link(f, 50); # not anymore
-    # tr = tr[(tr['x'] < x_hi) & (tr['x'] > x_lo)]; # not recommended to use
-
+    
     tr = sub.filter_ephemeral(tr, thres=5)
 
     tr_v = sub.get_v(tr)
@@ -61,12 +62,11 @@ for i in range(34,54):
     tr_v2 = sub.filter_v(tr_v, xlim=10, ylim1=2*info.voltage[i], ylim2=-10, direction=True)
     sub.plot_tr_v(tr_v2)
 
-    info = pd.read_csv(path_info, delimiter=',', header=0) # update info
-    tr_v3 = sub.convert_tr(tr_v2, front=info.front[i], back=info.back[i], rate_time=1/info.fps[i])
+    tr_v3 = sub.convert_tr(tr_v2, front=info.front[i], back=info.back[i], rate_time=1/info.fps[i], rate_space=1)
 
     tr_av = sub.each_particle(tr_v3, vol_init=info.voltage[i])
 
-    mu, tr_av_vel = sub2.k_means(tr_av['velocity'])
+    # mu, tr_av_vel = sub2.k_means(tr_av['velocity']) # I think now
 
     # %% Export tr_av and tr_av_vel to comma delimited text file
     path_sav_vy = '/Users/hk/Desktop/LEMI/DEP-LPS/Linear EK/analysis/' + exp_date + '/vy/'
