@@ -66,7 +66,7 @@ for i in range(44,54):
 
     tr_av = sub.each_particle(tr_v3, vol_init=info.voltage[i])
 
-    # mu, tr_av_vel = sub2.k_means(tr_av['velocity']) # I think now
+    # mu, tr_av_vel = sub2.k_means(tr_av['velocity']) # hold back until QW issue resolves
 
     # %% Export tr_av and tr_av_vel to comma delimited text file
     path_sav_vy = '/Users/hk/Desktop/LEMI/DEP-LPS/Linear EK/analysis/' + exp_date + '/vy/'
