@@ -32,7 +32,7 @@ path_plot = '/Users/hk/Desktop/LEMI/DEP-LPS/Linear EK/analysis'
 info = pd.read_csv(path_info, delimiter=',', header=0)
 
 path_tif = '/Volumes/LEMI_HK/LPS-DEP/XXXX-XX-XX/adjusted'
-for i in range(44,54):
+for i in range(34,54):
     path_tif = path_tif.replace('XXXX-XX-XX',info.date[i])
     s = path_tif + '/' + '%s_R%d_Ch%02d_GFP_%02dV_20X_001.ome.tif' % (info.cond[i], info.rep[i], info.channel[i], info.voltage[i])
     # s = path_tif + '/' + '%s_R%d_Ch%02d_GFP_%02dV_20X_001.ome_test.tif' % (info.cond[i], info.rep[i], info.channel[i], info.voltage[i])
@@ -71,7 +71,8 @@ for i in range(44,54):
     # %% Export tr_av and tr_av_vel to comma delimited text file
     path_sav_vy = '/Users/hk/Desktop/LEMI/DEP-LPS/Linear EK/analysis/' + exp_date + '/vy/'
     path_sav_tr = '/Users/hk/Desktop/LEMI/DEP-LPS/Linear EK/analysis/' + exp_date + '/tr/'
-    tr_sav = pd.DataFrame(data = tr_av_vel, columns=['velocity'])
+    # tr_sav = pd.DataFrame(data = tr_av_vel, columns=['velocity']) # hold back until QW issue resolves
+    tr_sav = pd.DataFrame(data = tr_av['velocity'].values, columns=['velocity'])
     s = path_sav_vy + '%s_R%d_Ch%02d_GFP_%02dV_20X_001.ome.csv' % (info.cond[i], info.rep[i], info.channel[i], info.voltage[i])
     s2 = path_sav_tr + '%s_R%d_Ch%02d_GFP_%02dV_20X_001.ome.csv' % (info.cond[i], info.rep[i], info.channel[i], info.voltage[i])
     tr_sav.to_csv(s, index = False)

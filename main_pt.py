@@ -2,7 +2,7 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 """
-Last modified on Dec 08 2021
+Last modified on Dec 28 2021
 
 For LLNL EK project. Updates --
 Dec 08: Duplicated from 'main_bact.py'. Updated path info.
@@ -21,13 +21,13 @@ import trackpy as tp
 import time
 
 # %%
-exp_date = '2021-11-29'
-path_info = '/Users/hk/Desktop/LEMI/SFA/Electrokinetics/' + exp_date + ' Pt mobility 2/' + 'info_' + exp_date + '.txt'
-path_plot = '/Users/hk/Desktop/LEMI/SFA/Electrokinetics/' + exp_date + ' Pt mobility 2/analysis/'
+exp_date = '2021-12-22'
+path_info = '/Users/hk/Desktop/LEMI/SFA/Electrokinetics/' + exp_date + ' Pt mobility 3/' + 'info_' + exp_date + '.txt'
+path_plot = '/Users/hk/Desktop/LEMI/SFA/Electrokinetics/' + exp_date + ' Pt mobility 3/analysis/'
 info = pd.read_csv(path_info, delimiter=',', header=0)
 
 path_tif = '/Volumes/LEMI_HK/LLNL BioSFA/EK/XXXX-XX-XX/adjusted'
-for i in range(1,18):
+for i in range(26):
     path_tif = path_tif.replace('XXXX-XX-XX',info.date[i])
     s = path_tif + '/' + '%s_R%d_Ch%02d_TR_%02dV_20X_001.ome.tif' % (info.cond[i], info.rep[i], info.channel[i], info.voltage[i])
     frame = pims.open(s)
@@ -35,6 +35,7 @@ for i in range(1,18):
     t1 = time.time()
     mid = (info.front[i] + info.back[i])//2
     b, cnt = sub.binarize(frame[mid])
+    cnt = cnt * ((cnt>=10) & (cnt<=200)) + 10 * ((cnt<10) | (cnt>200))
     frame2, _ = sub.binarize_batch(frame) # for validating tp.annotate
 
     f = pile(frame[1:], topn=cnt//2) # exclude the first frame it has been subtracted to remove background
