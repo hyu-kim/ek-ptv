@@ -10,3 +10,7 @@ Quick description (details are described in [1])
 4) Filter out noises
 5) Convert trace information into physical quantities (units in microns and seconds)
 6) Save converted trace data for statistical analysis
+
+References
+[1] Allan, Daniel B., Caswell, Thomas, Keim, Nathan C., van der Wel, Casper M., & Verweij, Ruben W. (2021). soft-matter/trackpy: Trackpy v0.5.0 (v0.5.0). Zenodo. https://doi.org/10.5281/zenodo.4682814
+[2] Allan, Daniel B., Caswell, Thomas, Keim, Nathan C., van der Wel, Casper M., & Dimiduk, Thomas (2020). PIMS: Python Image Sequence. http://soft-matter.github.io/pims/v0.5/index.html#
