@@ -2,7 +2,7 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 """
-Last modified on Dec 28 2021
+Last modified on Jan 04 2021
 
 For LLNL EK project. Updates --
 Dec 08: Duplicated from 'main_bact.py'. Updated path info.
@@ -21,15 +21,15 @@ import trackpy as tp
 import time
 
 # %%
-exp_date = '2021-12-22'
-path_info = '/Users/hk/Desktop/LEMI/SFA/Electrokinetics/' + exp_date + ' Pt mobility 3/' + 'info_' + exp_date + '.txt'
-path_plot = '/Users/hk/Desktop/LEMI/SFA/Electrokinetics/' + exp_date + ' Pt mobility 3/analysis/'
+exp_date = '2021-12-31'
+path_info = '/Users/hk/Desktop/LEMI/SFA/Electrokinetics/' + exp_date + ' Pt mobility 4/' + 'info_' + exp_date + '.txt'
+path_plot = '/Users/hk/Desktop/LEMI/SFA/Electrokinetics/' + exp_date + ' Pt mobility 4/analysis/'
 info = pd.read_csv(path_info, delimiter=',', header=0)
 
 path_tif = '/Volumes/LEMI_HK/LLNL BioSFA/EK/XXXX-XX-XX/adjusted'
-for i in range(26):
+for i in range(len(info)):
     path_tif = path_tif.replace('XXXX-XX-XX',info.date[i])
-    s = path_tif + '/' + '%s_R%d_Ch%02d_TR_%02dV_20X_001.ome.tif' % (info.cond[i], info.rep[i], info.channel[i], info.voltage[i])
+    s = path_tif + '/' + '%s_R%d_Ch%02d_TR_%02dV_10X_001.ome.tif' % (info.cond[i], info.rep[i], info.channel[i], info.voltage[i])
     frame = pims.open(s)
 
     t1 = time.time()
@@ -65,9 +65,12 @@ for i in range(26):
 
     mu, tr_av_vel = sub2.k_means(tr_av['velocity'])
 
-    # %% Export to comma delimited text file
-    path_sav = path_plot + 'csv/'
+    # %% Export tr_av and tr_av_vel to comma delimited text file
+    path_sav_vy = path_plot + 'vy/'
+    path_sav_tr = path_plot + 'tr/'
+    s = path_sav_vy + '%s_R%d_Ch%02d_TR_%02dV_20X_001.ome.csv' % (info.cond[i], info.rep[i], info.channel[i], info.voltage[i])
+    s2 = path_sav_tr + '%s_R%d_Ch%02d_TR_%02dV_20X_001.ome.csv' % (info.cond[i], info.rep[i], info.channel[i], info.voltage[i])
+
     tr_sav = pd.DataFrame(data = tr_av_vel, columns=['velocity'])
-    # tr_sav = get_tr_sav(tr_av, ind, info)   #ignore in this updated version 
-    s = path_sav + '%s_R%d_Ch%02d_GFP_%02dV_20X_001.ome.csv' % (info.cond[i], info.rep[i], info.channel[i], info.voltage[i])
     tr_sav.to_csv(s, index = False)
+    tr_av.to_csv(s2, index = False)
