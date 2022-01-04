@@ -74,3 +74,5 @@ for i in range(len(info)):
     tr_sav = pd.DataFrame(data = tr_av_vel, columns=['velocity'])
     tr_sav.to_csv(s, index = False)
     tr_av.to_csv(s2, index = False)
+
+# %% FOR CORRECTING OUTPUT FILES IN TR / VY FOLDERS
