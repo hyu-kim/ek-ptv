@@ -1,5 +1,5 @@
 # ek-ptv
-Particle tracking algorithm based on package "trackpy" [1]
+Particle tracking algorithm based on a package "trackpy" [1].
 
 Objective: To obtain individual particle velocity from a sequence of images. The velocity measures are then be used to calculate an electrokinetic (EK) mobility via statistical analysis (R code available upon request).
 
