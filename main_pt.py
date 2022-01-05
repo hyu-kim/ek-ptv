@@ -23,7 +23,7 @@ import time
 # %%
 exp_date = '2021-12-31'
 path_info = '/Users/hk/Desktop/LEMI/SFA/Electrokinetics/' + exp_date + ' Pt mobility 4/' + 'info_' + exp_date + '.txt'
-path_plot = '/Users/hk/Desktop/LEMI/SFA/Electrokinetics/' + exp_date + ' Pt mobility 4/analysis/'
+path_plot = '/Users/hk/Desktop/LEMI/SFA/Electrokinetics/' + exp_date + ' Pt mobility 4/'
 info = pd.read_csv(path_info, delimiter=',', header=0)
 
 path_tif = '/Volumes/LEMI_HK/LLNL BioSFA/EK/XXXX-XX-XX/adjusted'
@@ -59,7 +59,7 @@ for i in range(len(info)):
     sub.plot_tr_v(tr_v2)
 
     info = pd.read_csv(path_info, delimiter=',', header=0) # update info
-    tr_v3 = sub.convert_tr(tr_v2, front=info.front[i], back=info.back[i], rate_time=1/info.fps[i])
+    tr_v3 = sub.convert_tr(tr_v2, front=info.front[i], back=info.back[i], rate_time=1/info.fps[i], rate_space=1.95)
 
     tr_av = sub.each_particle(tr_v3, vol_init=info.voltage[i])
 
@@ -68,8 +68,8 @@ for i in range(len(info)):
     # %% Export tr_av and tr_av_vel to comma delimited text file
     path_sav_vy = path_plot + 'vy/'
     path_sav_tr = path_plot + 'tr/'
-    s = path_sav_vy + '%s_R%d_Ch%02d_TR_%02dV_20X_001.ome.csv' % (info.cond[i], info.rep[i], info.channel[i], info.voltage[i])
-    s2 = path_sav_tr + '%s_R%d_Ch%02d_TR_%02dV_20X_001.ome.csv' % (info.cond[i], info.rep[i], info.channel[i], info.voltage[i])
+    s = path_sav_vy + '%s_R%d_Ch%02d_TR_%02dV_10X_001.ome.csv' % (info.cond[i], info.rep[i], info.channel[i], info.voltage[i])
+    s2 = path_sav_tr + '%s_R%d_Ch%02d_TR_%02dV_10X_001.ome.csv' % (info.cond[i], info.rep[i], info.channel[i], info.voltage[i])
 
     tr_sav = pd.DataFrame(data = tr_av_vel, columns=['velocity'])
     tr_sav.to_csv(s, index = False)

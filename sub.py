@@ -445,7 +445,7 @@ def get_tr_sav(tr_av, ind, info):
 #         frame2[i] = temp.astype(np.uint16);
 #     return frame2
 
-def convert_vy(v, front, back, rate_time=0.138, rate_space=1.288):
+def convert_vy(v, front, back, rate_time=0.138, rate_space=1):
     """
     Trims starting / ending frames. Converts units in time / space
 
