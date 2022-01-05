@@ -2,7 +2,7 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 """
-Last run on Dec 17 2021
+Last run on Jan 05 2021
 
 For LPS-DEP project. Updates --
 Oct 30: 1) file path, 2) noise reduction for bacterial cell tracking
@@ -26,10 +26,10 @@ import trackpy as tp
 import time
 
 # %%
-exp_date = '2021-12-09_BL21'
+exp_date = '2022-01-03_BL21'
 path_info = '/Users/hk/Desktop/LEMI/DEP-LPS/Linear EK/info_' + exp_date + '.txt'
 path_plot = '/Users/hk/Desktop/LEMI/DEP-LPS/Linear EK/analysis'
-info = pd.read_csv(path_info, delimiter=',', header=0)
+info = pd.read_csv(path_info, delimiter=',', header=0, dtype={'od': 'str'})
 
 path_tif = '/Volumes/LEMI_HK/LPS-DEP/XXXX-XX-XX/adjusted'
 for i in range(len(info)):
@@ -44,7 +44,7 @@ for i in range(len(info)):
     cnt = cnt * ((cnt>=10) & (cnt<=200)) + 10 * ((cnt<10) | (cnt>200))
     frame2, _ = sub.binarize_batch(frame) # for validating tp.annotate
 
-    f = pile(frame[1:], topn=cnt//2) # exclude the first frame it has been subtracted to remove background
+    f = pile(frame[1:], diam=11, topn=cnt//2) # exclude the first frame it has been subtracted to remove background
     # f = pile(frame[1:], topn=5) # use this when cell number is too low (i.e. wrong cnt)
     # tp.annotate(f[100], frame2[100]) # run this to check if cells were properly detected
 
@@ -59,14 +59,14 @@ for i in range(len(info)):
     t2 = time.time()
     print("elapsed : %s sec" % (t2-t1))
 
-    tr_v2 = sub.filter_v(tr_v, xlim=10, ylim1=2*info.voltage[i], ylim2=-10, direction=True)
+    tr_v2 = sub.filter_v(tr_v, xlim=5, ylim1=2*info.voltage[i], ylim2=-3, direction=True)
     sub.plot_tr_v(tr_v2)
 
     tr_v3 = sub.convert_tr(tr_v2, front=info.front[i], back=info.back[i], rate_time=1/info.fps[i], rate_space=1.95)
 
     tr_av = sub.each_particle(tr_v3, vol_init=info.voltage[i])
 
-    # mu, tr_av_vel = sub2.k_means(tr_av['velocity']) # hold back until QW issue resolves
+#     mu, tr_av_vel = sub2.k_means(tr_av['velocity']) # hold back until QW issue resolves
 
     # %% Export tr_av and tr_av_vel to comma delimited text file
     path_sav_vy = '/Users/hk/Desktop/LEMI/DEP-LPS/Linear EK/analysis/' + exp_date + '/vy/'
