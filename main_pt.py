@@ -76,6 +76,18 @@ for i in range(len(info)):
     tr_av.to_csv(s2, index = False)
 
 # %% FOR CORRECTING OUTPUT FILES IN TR / VY FOLDERS
-# 
-l = os.listdir(path_plot + 'vy')
+# multiply by 1.95 times to correct pixel-micron ratio
+l = os.listdir(path_plot + 'tr')
+ind = 0
+while ind<len(l):
+    if l[ind][0]=='.':
+        del l[ind]
+    else:
+        ind = ind+1
+l.sort()
 for s in l:
+    mtx = pd.read_csv(path_plot+'tr/'+s, delimiter=',', header=0)
+    mtx.velocity = mtx.velocity * 1.95
+    mtx.mobility = mtx.mobility * 1.95
+    mtx.zeta = mtx.zeta * 1.95
+    mtx.to_csv(path_plot+'tr/'+s, index=False)
