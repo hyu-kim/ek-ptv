@@ -2,7 +2,7 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 """
-Last run on Jan 04 2022
+Last run on Dec 17 2021
 
 For LPS-DEP project. Updates --
 Oct 30: 1) file path, 2) noise reduction for bacterial cell tracking
@@ -11,7 +11,6 @@ Dec 04: Use v_y instead of mobility for export
 Dec 11: Export trace dataframe for record. Increase the upper cutoff filtering velocity range
 Dec 17: 1) updated module sub ("get_v" and "convert_tr")
         2) Hold back using kmeans clustering -- as the mobility computed too high than expected
-Jan 04: info col4 changed from 'rep' to 'OD' for BL21 analysis (with git new branch "BL21")
 
 @author: Hyu Kim (hskimm@mit.edu)
 """
@@ -27,7 +26,7 @@ import trackpy as tp
 import time
 
 # %%
-exp_date = '2022-01-03_BL21'
+exp_date = '2021-12-09_BL21'
 path_info = '/Users/hk/Desktop/LEMI/DEP-LPS/Linear EK/info_' + exp_date + '.txt'
 path_plot = '/Users/hk/Desktop/LEMI/DEP-LPS/Linear EK/analysis'
 info = pd.read_csv(path_info, delimiter=',', header=0)
@@ -36,7 +35,7 @@ path_tif = '/Volumes/LEMI_HK/LPS-DEP/XXXX-XX-XX/adjusted'
 for i in range(len(info)):
     path_tif = path_tif.replace('XXXX-XX-XX',info.date[i])
     s = path_tif + '/' + '%s_OD%s_Ch%02d_GFP_%02dV_10X_001.ome.tif' % (info.cond[i], info.od[i], info.channel[i], info.voltage[i])
-    # s = path_tif + '/' + '%s_R%d_Ch%02d_GFP_%02dV_20X_001.ome_test.tif' % (info.cond[i], info.rep[i], info.channel[i], info.voltage[i])
+    # s = path_tif + '/' + '%s_R%d_Ch%02d_GFP_%02dV_20X_001.ome_test.tif' % (info.cond[i], info.od[i], info.channel[i], info.voltage[i])
     frame = pims.open(s)
 
     t1 = time.time()
@@ -63,7 +62,7 @@ for i in range(len(info)):
     tr_v2 = sub.filter_v(tr_v, xlim=10, ylim1=2*info.voltage[i], ylim2=-10, direction=True)
     sub.plot_tr_v(tr_v2)
 
-    tr_v3 = sub.convert_tr(tr_v2, front=info.front[i], back=info.back[i], rate_time=1/info.fps[i], rate_space=1)
+    tr_v3 = sub.convert_tr(tr_v2, front=info.front[i], back=info.back[i], rate_time=1/info.fps[i], rate_space=1.95)
 
     tr_av = sub.each_particle(tr_v3, vol_init=info.voltage[i])
 
@@ -74,7 +73,7 @@ for i in range(len(info)):
     path_sav_tr = '/Users/hk/Desktop/LEMI/DEP-LPS/Linear EK/analysis/' + exp_date + '/tr/'
     # tr_sav = pd.DataFrame(data = tr_av_vel, columns=['velocity']) # hold back until QW issue resolves
     tr_sav = pd.DataFrame(data = tr_av['velocity'].values, columns=['velocity'])
-    s = path_sav_vy + '%s_R%d_Ch%02d_GFP_%02dV_20X_001.ome.csv' % (info.cond[i], info.rep[i], info.channel[i], info.voltage[i])
-    s2 = path_sav_tr + '%s_R%d_Ch%02d_GFP_%02dV_20X_001.ome.csv' % (info.cond[i], info.rep[i], info.channel[i], info.voltage[i])
+    s = path_sav_vy + '%s_OD%s_Ch%02d_GFP_%02dV_10X_001.ome.csv' % (info.cond[i], info.od[i], info.channel[i], info.voltage[i])
+    s2 = path_sav_tr + '%s_OD%s_Ch%02d_GFP_%02dV_10X_001.ome.csv' % (info.cond[i], info.od[i], info.channel[i], info.voltage[i])
     tr_sav.to_csv(s, index = False)
     tr_av.to_csv(s2, index = False)
