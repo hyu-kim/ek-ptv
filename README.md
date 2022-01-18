@@ -10,7 +10,7 @@ Quick description
 3) Link relevant locations through multiple frames and create trace information for every particle detected
 4) Filter out noises
 5) Convert trace information into physical quantities (units in microns and seconds)
-6) Save converted trace data for statistical analysis
+6) Save converted trace data for statistical analysis via R
 
 (Details are described in [1])
 
