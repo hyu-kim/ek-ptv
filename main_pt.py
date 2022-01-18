@@ -27,7 +27,7 @@ path_plot = '/Users/hk/Desktop/LEMI/SFA/Electrokinetics/' + exp_date + ' Pt mobi
 info = pd.read_csv(path_info, delimiter=',', header=0)
 
 path_tif = '/Volumes/LEMI_HK/LLNL BioSFA/EK/XXXX-XX-XX/adjusted'
-for i in range(len(info)):
+for i in range(1):
     path_tif = path_tif.replace('XXXX-XX-XX',info.date[i])
     s = path_tif + '/' + '%s_R%d_Ch%02d_TR_%02dV_10X_001.ome.tif' % (info.cond[i], info.rep[i], info.channel[i], info.voltage[i])
     frame = pims.open(s)

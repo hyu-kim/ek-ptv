@@ -1,6 +1,7 @@
 # %%
 """
-Last modified on Dec 06 2021
+Last modified on Jan 17 2022
+Jan 17: filename format now includes pH information
 """
 import os
 import pandas as pd
