@@ -1,4 +1,4 @@
-# Created by Hyungseok Kim (hskimm@mit.edu), last modified on 12/28/21
+# Created by Hyungseok Kim (hskimm@mit.edu), last modified on 1/18/22
 # Continued from "create_df.R" THEN "lm.R"
 # Plots mean+-sd of EK mobility by each treatment
 library("ggplot2")
@@ -21,13 +21,15 @@ library(Rmisc)
 mu_df %>%
   mutate(Treatment = factor(Treatment, levels=trts)) %>%
   mutate(Replicate = factor(Replicate, levels=reps)) %>%
-  ggplot(aes(x=Treatment, y=Mobility * 1e9, fill=Replicate)) + 
-  geom_bar(stat = "summary", fun = mean, size = 0.2, width = 0.75, fill=NA, colour='black') +
-  geom_point(stroke = 0.2, size = 1, pch = 21, position = position_jitterdodge(0.3)) +
-  labs(x='Strain', y=expression(paste('Mobility (','10'^{-9}, ' m'^2,'/ V-s)')))
+  # ggplot(aes(x=pH, y=Mobility * 1e9, fill=Replicate)) + 
+  ggplot(aes(x=pH, y=Mobility * 1e9)) + 
+  # geom_bar(stat = "summary", fun = mean, size = 0.2, width = 0.75, fill=NA, colour='black') +
+  geom_line() + geom_point() +
+  # geom_point(stroke = 0.2, size = 1, pch = 21, position = position_jitterdodge(0.3)) +
+  labs(x='pH', y=expression(paste('Mobility (','10'^{-9}, ' m'^2,'/ V-s)')))
 
 setwd(paste(path,"figs",sep="/"))
-ggsave('mobility_v2.eps', width = 4, height = 3.5, units = "in")
+ggsave('mobility.eps', width = 4, height = 3.5, units = "in")
 
 ### add a column with a date
 mu_df$date <- date

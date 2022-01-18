@@ -4,19 +4,20 @@ library("ggplot2")
 library(tidyverse)
 
 # subset df by each treatment
-trt = '+1R1'
-df_trt <- df[df$Treatment==trt,]
-df_trt$"Voltage" <- as.factor(df_trt$"Voltage")
-df_trt$"Replicate" <- as.factor(df_trt$"Replicate")
+trt = 'Ax'
+ph = phs[8]
+df_p <- df[(df$Treatment==trt)&(df$pH==ph),]
+df_p$"Voltage" <- as.factor(df_p$"Voltage")
+df_p$"Replicate" <- as.factor(df_p$"Replicate")
 
 # create a boxplot, grouped by voltage
-ggplot(df_trt, aes(x=Voltage, y=Velocity, colour=Replicate)) + 
+ggplot(df_p, aes(x=Voltage, y=Velocity, colour=Replicate)) + 
   geom_boxplot() +
   # geom_point(position=position_jitterdodge())
-  labs(title=trt, x="Voltage (V)", y = "Velocity (µm/s)")
+  labs(title=paste("pH",ph,sep=" "), x="Voltage (V)", y = "Velocity (µm/s)")
 
 setwd(paste(path,"figs",sep="/"))
-ggsave(paste(trt,".eps", sep=""), width = 5, height = 4, units = "in")
+ggsave(paste("pH_",ph,".eps", sep=""), width = 5, height = 4, units = "in")
 
 # stat test
 # i = 3; j = 4;

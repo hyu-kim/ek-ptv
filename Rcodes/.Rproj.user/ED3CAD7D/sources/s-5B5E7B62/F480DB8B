@@ -1,6 +1,6 @@
 {
     "id": "F480DB8B",
-    "path": "~/Desktop/LEMI/SFA/Electrokinetics/codes/plot_all.R",
+    "path": "~/Documents/GitHub/ek-ptv/trackpy/Rcodes/plot_all.R",
     "project_path": "plot_all.R",
     "type": "r_source",
     "hash": "0",
@@ -12,15 +12,15 @@
     "properties": {
         "source_window_id": "",
         "Source": "Source",
-        "cursorPosition": "63,65",
-        "scrollLine": "41"
+        "cursorPosition": "33,28",
+        "scrollLine": "11"
     },
     "folds": "",
-    "lastKnownWriteTime": 1641498942,
+    "lastKnownWriteTime": 1642540053,
     "encoding": "UTF-8",
     "collab_server": "",
     "source_window": "",
-    "last_content_update": 1641498942110,
+    "last_content_update": 1642540053695,
     "read_only": false,
     "read_only_alternatives": []
 }

@@ -1,9 +1,9 @@
 {
     "id": "D9BF00FB",
-    "path": "~/Desktop/LEMI/SFA/Electrokinetics/codes/plot_by_param.R",
+    "path": "~/Documents/GitHub/ek-ptv/trackpy/Rcodes/plot_by_param.R",
     "project_path": "plot_by_param.R",
     "type": "r_source",
-    "hash": "0",
+    "hash": "2244079402",
     "contents": "",
     "dirty": false,
     "created": 1640731479188.0,
@@ -12,15 +12,15 @@
     "properties": {
         "source_window_id": "",
         "Source": "Source",
-        "cursorPosition": "0,69",
-        "scrollLine": "0"
+        "cursorPosition": "7,11",
+        "scrollLine": "2"
     },
     "folds": "",
-    "lastKnownWriteTime": 1642532382,
+    "lastKnownWriteTime": 1642535525,
     "encoding": "UTF-8",
     "collab_server": "",
     "source_window": "",
-    "last_content_update": 1642532382438,
+    "last_content_update": 1642535525493,
     "read_only": false,
     "read_only_alternatives": []
 }
