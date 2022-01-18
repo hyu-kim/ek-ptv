@@ -33,7 +33,8 @@ def str2df(s, date):
         i = i+1
     df = pd.DataFrame({
         'date': [date], 'channel': [int(l[2][2:])], 'cond': [l[0]], 
-        'rep': [int(l[1][1])], 'voltage': [l[4][:-1]],
+        'rep': [int(l[1][1])], 'ph': [int(l[3][2]) + 0.01*float(l[3][4:6])], 
+        'light': [l[4]], 'voltage': [l[5][:-1]],
         'fps':[10], 'front':[0], 'back':[0]
     })
     return df
@@ -61,7 +62,7 @@ def create_info(exp_date='2021-11-10', path='/Volumes/LEMI_HK/LPS-DEP/', path_ou
     l.sort()
 
     # create and add video info
-    info = pd.DataFrame(columns=['date','channel','cond','rep','voltage','fps','front','back'])
+    info = pd.DataFrame(columns=['date','channel','cond','rep','ph','light','voltage','fps','front','back'])
     for s in l:
         new_row = str2df(s, exp_date)
         info = info.append(new_row)
