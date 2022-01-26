@@ -2,11 +2,12 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 """
-Last modified on Jan 17 2022
+Last modified on Jan 26 2022
 
 For LLNL EK project. Updates --
 Dec 08: Duplicated from 'main_bact.py'. Updated path info.
 Jan 17: Info now includes pH and light filter
+Jan 26: Test run for GSP2022 data
 
 @author: Hyu Kim (hskimm@mit.edu)
 """
@@ -24,14 +25,14 @@ import math
 
 # %%
 exp_date = '2022-01-15'
-path_info = '/Users/hk/Desktop/LEMI/SFA/Electrokinetics/' + exp_date + ' ep_ph/' + 'info_' + exp_date + '.txt'
-path_plot = '/Users/hk/Desktop/LEMI/SFA/Electrokinetics/' + exp_date + ' ep_ph/'
+path_info = '/Users/hyungseokkim/Desktop/LEMI/SFA/Electrokinetics/' + exp_date + ' ep_ph/' + 'info_' + exp_date + '.txt'
+path_plot = '/Users/hyungseokkim/Desktop/LEMI/SFA/Electrokinetics/' + exp_date + ' ep_ph/'
 path_sav_vy = path_plot + 'vy/'
 path_sav_tr = path_plot + 'tr/'
 info = pd.read_csv(path_info, delimiter=',', header=0)
 
 path_tif = '/Volumes/LEMI_HK/LLNL BioSFA/EK/XXXX-XX-XX/adjusted'
-for i in range(32,41):
+for i in [2]:
     path_tif = path_tif.replace('XXXX-XX-XX',info.date[i])
     s = path_tif + '/' + '%s_R%d_Ch%02d_pH%dp%02d_%s_%02dV_10X_001.ome.tif' % (info.cond[i], info.rep[i], info.channel[i], math.floor(info.ph[i]), round(100*(info.ph[i]-math.floor(info.ph[i]))), info.light[i], info.voltage[i])
     frame = pims.open(s)
@@ -67,8 +68,8 @@ for i in range(32,41):
 
     tr_av = sub.each_particle(tr_v3, vol_init=info.voltage[i])
 
-    # mu, tr_av_vel = sub2.k_means(tr_av['velocity'])
-    tr_av_vel = tr_av['velocity']
+    mu, tr_av_vel = sub2.k_means(tr_av['velocity'])
+    # tr_av_vel = tr_av['velocity']
 
     # %% Export tr_av and tr_av_vel to comma delimited text file
     s = path_sav_vy + '%s_R%d_Ch%02d_pH%dp%02d_%s_%02dV_10X_001.ome.txt' % (info.cond[i], info.rep[i], info.channel[i], math.floor(info.ph[i]), 100*(info.ph[i]-math.floor(info.ph[i])), info.light[i], info.voltage[i])

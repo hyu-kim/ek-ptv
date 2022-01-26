@@ -17,8 +17,6 @@ import trackpy as tp
 from skimage import measure, filters
 # from skimage.filters import threshold_otsu
 
-
-
 def binarize(frame, sigma=2):
     """
     Otsu's thresholding after gaussian filter
