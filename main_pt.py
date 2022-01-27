@@ -32,7 +32,7 @@ path_sav_tr = path_plot + 'tr/'
 info = pd.read_csv(path_info, delimiter=',', header=0)
 
 path_tif = '/Volumes/LEMI_HK/LLNL BioSFA/EK/XXXX-XX-XX/adjusted'
-for i in [2]:
+for i in range(34,41):
     path_tif = path_tif.replace('XXXX-XX-XX',info.date[i])
     s = path_tif + '/' + '%s_R%d_Ch%02d_pH%dp%02d_%s_%02dV_10X_001.ome.tif' % (info.cond[i], info.rep[i], info.channel[i], math.floor(info.ph[i]), round(100*(info.ph[i]-math.floor(info.ph[i]))), info.light[i], info.voltage[i])
     frame = pims.open(s)
@@ -72,8 +72,8 @@ for i in [2]:
     # tr_av_vel = tr_av['velocity']
 
     # %% Export tr_av and tr_av_vel to comma delimited text file
-    s = path_sav_vy + '%s_R%d_Ch%02d_pH%dp%02d_%s_%02dV_10X_001.ome.txt' % (info.cond[i], info.rep[i], info.channel[i], math.floor(info.ph[i]), 100*(info.ph[i]-math.floor(info.ph[i])), info.light[i], info.voltage[i])
-    s2 = path_sav_tr + '%s_R%d_Ch%02d_pH%dp%02d_%s_%02dV_10X_001.ome.txt' % (info.cond[i], info.rep[i], info.channel[i], math.floor(info.ph[i]), 100*(info.ph[i]-math.floor(info.ph[i])), info.light[i], info.voltage[i])
+    s = path_sav_vy + '%s_R%d_Ch%02d_pH%dp%02d_%s_%02dV_10X_001.ome.txt' % (info.cond[i], info.rep[i], info.channel[i], math.floor(info.ph[i]), round(100*(info.ph[i]-math.floor(info.ph[i]))), info.light[i], info.voltage[i])
+    s2 = path_sav_tr + '%s_R%d_Ch%02d_pH%dp%02d_%s_%02dV_10X_001.ome.txt' % (info.cond[i], info.rep[i], info.channel[i], math.floor(info.ph[i]), round(100*(info.ph[i]-math.floor(info.ph[i]))), info.light[i], info.voltage[i])
 
     tr_sav = pd.DataFrame(data = tr_av_vel, columns=['velocity'])
     tr_sav.to_csv(s, index = False)

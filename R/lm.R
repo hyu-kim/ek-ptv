@@ -18,7 +18,7 @@ phs = c(7.76, 8, 8.21, 9.16, 9.43, 8.57, 9.69, 9.94)
 mu_df <- data.frame(Treatment=factor(), Replicate=factor(), pH=double(), Mobility=double())
 for (trt in trts){ # for passing into "plot_all.R"
   # for (rep in reps){
-    for (ph in phs){
+    for (ph in c(7.76)){
       rep <- rd_info$rep[rd_info$ph==ph][1]
       df_params <- df[(df$Treatment==trt)&(df$pH==ph),]
       res <- lm(Velocity ~ Voltage, data = df_params)
