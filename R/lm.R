@@ -38,3 +38,4 @@ for (trt in trts){ # for passing into "plot_all.R"
 }
 
 # Export mu_df into csv
+write.csv(mu_df, paste(path,"mu_df.csv",sep='/'), row.names = FALSE)

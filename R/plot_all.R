@@ -30,13 +30,13 @@ mu_df_all %>%
   geom_bar(stat = "summary", fun = mean, size = 0.3, width = 0.75, color = 'black',
            position = position_dodge(),
            aes(x=Treatment, y=Mobility * 1e9, fill=date)) +
-  geom_point(stroke = 0.8, size = 2, pch = 16, position = position_jitterdodge(0.1),
+  geom_point(stroke = 1, size = 3, pch = 16, position = position_jitterdodge(0.1),
              aes(x=Treatment, y=Mobility * 1e9, color='black', group=date)) +
   scale_fill_manual(values=c("#A6C062","#015484")) +
   theme(text = element_text(size=18),
         title =element_text(size=18),
-        legend.position = "bottom", 
-        # axis.text.y = element_blank(),
+        legend.position = "none", 
+        axis.text.y = element_text(size=18),
         axis.text.x = element_text(size=18),
         # axis.title.y  = element_blank(),
         axis.title.x  = element_blank(),
@@ -52,4 +52,4 @@ mu_df_all %>%
   labs(x='Culture', y=expression(paste('Electrokinetic mobility (','10'^{-9}, ' m'^2,'/ V-s)')), fill='Growth stage')
 
 setwd("/Users/hyungseokkim/Desktop/LEMI/SFA/Conference/2022-02 GSP/img+data")
-ggsave('ek_mobility.eps', width = 6, height = 6, units = "in")
+ggsave('ek_mobility.eps', width = 6, height = 5, units = "in")
