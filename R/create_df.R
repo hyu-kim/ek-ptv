@@ -6,8 +6,8 @@ library(tidyverse)
 rm(list=ls())
 
 ## import and clean
-date = '2022-01-15'
-path <- paste("/Users/hyungseokkim/Desktop/LEMI/SFA/Electrokinetics/", date, " ep_ph", sep="")
+date = '2021-12-22'
+path <- paste("/Users/hyungseokkim/Desktop/LEMI/SFA/Electrokinetics/", date, " Pt mobility 3", sep="")
 setwd(path)
 filename = paste("info_",date,".txt",sep="")
 rd_info = read.delim(filename,sep = ",",header=TRUE,dec = ".")
