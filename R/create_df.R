@@ -1,13 +1,14 @@
-# Created by Hyungseok Kim (hskimm@mit.edu), last run on 1/18/22
+# Created by Hyungseok Kim (hskimm@mit.edu), last run on 2/11/22
 # 2021-12-28: copied from DEP-LPS project
+# 2022-02-11: postprocess data on Jan29
 library("ggplot2")
 library(tidyverse)
 
 rm(list=ls())
 
 ## import and clean
-date = '2021-12-22'
-path <- paste("/Users/hyungseokkim/Desktop/LEMI/SFA/Electrokinetics/", date, " Pt mobility 3", sep="")
+date = '2022-01-29'
+path <- paste("/Users/hk/Desktop/LEMI/SFA/Electrokinetics/", date, " ep_ph 2", sep="")
 setwd(path)
 filename = paste("info_",date,".txt",sep="")
 rd_info = read.delim(filename,sep = ",",header=TRUE,dec = ".")

@@ -5,32 +5,22 @@ library("ggplot2")
 library(tidyverse)
 library(Rmisc)
 
-# mu_df_SE <- summarySE(
-#   mu_df, 
-#   measurevar = 'Mobility', groupvars = 'Treatment'
-#   ) # summarizes df by each treatment and replicate
-# 
-# mu_df_SE %>%
-#   mutate(Treatment = factor(Treatment, levels=trts)) %>%
-#   ggplot( aes(x=Treatment, y=Mobility * 1e9)) +
-#     geom_bar(stat="identity", position=position_dodge(), fill=NA, colour='black') + 
-#     # geom_errorbar(aes(ymin=(Mobility-sd)*1e9, ymax=(Mobility+sd)*1e9), width=.2) + 
-#     geom_point(stroke = 0.2, size = 1, pch = 21, position = position_jitterdodge(0.3)) +
-#     labs(x='Strain', y=expression(paste('Mobility (','10'^{-9}, ' m'^2,'/ V-s)')))
-
-mu_df %>%
+### By pH
+mu_df_f %>%
   mutate(Treatment = factor(Treatment, levels=trts)) %>%
   mutate(Replicate = factor(Replicate, levels=reps)) %>%
   # ggplot(aes(x=pH, y=Mobility * 1e9, fill=Replicate)) + 
   ggplot(aes(x=pH, y=Mobility * 1e9)) + 
-  # geom_bar(stat = "summary", fun = mean, size = 0.2, width = 0.75, fill=NA, colour='black') +
-  geom_line() + geom_point() +
+  # geom_bar(stat = "summary", fun = mean, size = 0.2, width = 0.1, fill=NA, colour='black') +
+  geom_line() +
+  geom_point() +
   # geom_point(stroke = 0.2, size = 1, pch = 21, position = position_jitterdodge(0.3)) +
-  labs(x='pH', y=expression(paste('Mobility (','10'^{-9}, ' m'^2,'/ V-s)')))
+  labs(x='pH', y=expression(paste('Mobility (','-10'^{-9}, ' m'^2,'/ V-s)')))
 
 setwd(paste(path,"figs",sep="/"))
-ggsave('mobility.eps', width = 4, height = 3.5, units = "in")
+ggsave('mobility_R1.eps', width = 5, height = 3.5, units = "in")
 
+### By culture type (old)
 ### add a column with a date
 mu_df$date <- date
 write.csv(mu_df, paste(path,"/",date,"_mu.csv",sep=""),row.names=FALSE)
