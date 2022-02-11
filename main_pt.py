@@ -2,12 +2,13 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 """
-Last modified on Jan 26 2022
+Last modified on Feb 11 2022
 
 For LLNL EK project. Updates --
 Dec 08: Duplicated from 'main_bact.py'. Updated path info.
-Jan 17: Info now includes pH and light filter
+Jan 17: Info now includes pH and light filter (new git branch)
 Jan 26: Test run for GSP2022 data
+Feb 11: Analyzed data acquired on Jan 29. Reduced length of frames to analyze by inverse of voltage (ie higher volt less particle analyzed)
 
 @author: Hyu Kim (hskimm@mit.edu)
 """
@@ -24,15 +25,15 @@ import time
 import math
 
 # %%
-exp_date = '2022-01-15'
-path_info = '/Users/hyungseokkim/Desktop/LEMI/SFA/Electrokinetics/' + exp_date + ' ep_ph/' + 'info_' + exp_date + '.txt'
-path_plot = '/Users/hyungseokkim/Desktop/LEMI/SFA/Electrokinetics/' + exp_date + ' ep_ph/'
+exp_date = '2022-01-29'
+path_info = '/Users/hk/Desktop/LEMI/SFA/Electrokinetics/' + exp_date + ' ep_ph 2/' + 'info_' + exp_date + '.txt'
+path_plot = '/Users/hk/Desktop/LEMI/SFA/Electrokinetics/' + exp_date + ' ep_ph 2/'
 path_sav_vy = path_plot + 'vy/'
 path_sav_tr = path_plot + 'tr/'
 info = pd.read_csv(path_info, delimiter=',', header=0)
 
-path_tif = '/Volumes/LEMI_HK/LLNL BioSFA/EK/XXXX-XX-XX/adjusted'
-for i in range(34,41):
+path_tif = '/Volumes/LEMI_HK/LLNL BioSFA/EK/XXXX-XX-XX/tif_v2'
+for i in range(7,15):
     path_tif = path_tif.replace('XXXX-XX-XX',info.date[i])
     s = path_tif + '/' + '%s_R%d_Ch%02d_pH%dp%02d_%s_%02dV_10X_001.ome.tif' % (info.cond[i], info.rep[i], info.channel[i], math.floor(info.ph[i]), round(100*(info.ph[i]-math.floor(info.ph[i]))), info.light[i], info.voltage[i])
     frame = pims.open(s)
@@ -43,7 +44,8 @@ for i in range(34,41):
     cnt = cnt * ((cnt>=10) & (cnt<=200)) + 10 * ((cnt<10) | (cnt>200))
     frame2, _ = sub.binarize_batch(frame) # for validating tp.annotate
 
-    f = pile(frame[1:], topn=cnt*2//3) # exclude the first frame it has been subtracted to remove background
+    n_read = info.front[i] + (info.back[i]-info.front[i])//(info.voltage[i]/10)
+    f = pile(frame[0:int(n_read)], topn=cnt*2//3) # exclude the first frame it has been subtracted to remove background
     # f = pile(frame[1:], topn=5) # use this when cell number is too low (i.e. wrong cnt)
     # tp.annotate(f[100], frame2[100]) # run this to check if cells were properly detected
 
