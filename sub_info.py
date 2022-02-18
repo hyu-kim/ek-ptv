@@ -2,7 +2,7 @@
 """
 Last modified on Feb 11 2022
 Jan 17: filename format now includes pH information
-Feb 18: format back to the original
+Feb 18: format back to the original, i.e. no ph
 """
 import os
 import pandas as pd
@@ -32,22 +32,21 @@ def str2df(s, date):
         else:
             j2 = i
         i = i+1
-    v = l[5][:-1] 
-    if int(v) <= 30: # voltage in range(0,30)
+    v = l[4][:-1] 
+    if int(v) <= 10: # voltage in range(0,30)
         f = 10 # fps
         b = 350 # frame size by default
-    else: # voltage either 40, 50
+    else: # voltage between 15 and 25
         f = 14.29
-        b = 500 # frame size by default
+        b = 480 # frame size by default
     df = pd.DataFrame({
         'date': [date], 'channel': [int(l[2][2:])], 'cond': [l[0]], 
-        'rep': [int(l[1][1])], 'ph': [int(l[3][2]) + 0.01*float(l[3][4:6])], 
-        'light': [l[4]], 'voltage': v,
+        'rep': [int(l[1][1])], 'light': [l[3]], 'voltage': v,
         'fps':f, 'front':[0], 'back':b
     })
     return df
 
-def create_info(exp_date='2021-11-10', path='/Volumes/LEMI_HK/LPS-DEP/', path_out='/Users/hk/Desktop/LEMI/DEP-LPS/Linear EK/'):
+def create_info(exp_date='2022-02-16', path='/Volumes/LEMI_HK/LLNL BioSFA/EK/', path_out='/Users/hk/Desktop/LEMI/SFA/Electrokinetics/2022-02-16 back ek/'):
     """
     Reads a list of files in a directory and creates a draft 'info.txt'
     format as '[treatment]_[replicate]_[channel]_[fluorescence]_[voltage]_[magnification]_[run_no].ome.tif'
@@ -70,7 +69,7 @@ def create_info(exp_date='2021-11-10', path='/Volumes/LEMI_HK/LPS-DEP/', path_ou
     l.sort()
 
     # create and add video info
-    info = pd.DataFrame(columns=['date','channel','cond','rep','ph','light','voltage','fps','front','back'])
+    info = pd.DataFrame(columns=['date','channel','cond','rep','light','voltage','fps','front','back'])
     for s in l:
         new_row = str2df(s, exp_date)
         info = info.append(new_row)
