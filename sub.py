@@ -362,7 +362,7 @@ def each_particle(tr_v, vol_init=10, ramp_rate=0):
     eta = 8.66e-4; # viscosity [Pa-s]
     l = 10e-3; # channel length [m]
     n_prt = max(tr_v['particle'])
-    colname = ['particle', 'time', 'duration', 'velocity', 'voltage', 'mobility', 'zeta']
+    colname = ['particle', 'time', 'duration', 'x', 'y', 'v_x', 'v_y', 'voltage', 'mobility']
     tr_avg = pd.DataFrame(columns = colname)
     
     for i in range(n_prt):
@@ -372,13 +372,16 @@ def each_particle(tr_v, vol_init=10, ramp_rate=0):
             par = i # particle no
             t0 = min(tr_v.time[ind][ind2])
             t1 = max(tr_v['time'][ind][ind2])
-            t_a = (t0 + t1) / 2 # time [sec]
-            dur = t1 - t0 # duration [sec]
-            vel = np.mean(tr_v['v_y'][ind][ind2]) # velocity [µm/s]
+            t_a = round((t0 + t1) / 2, 2) # time [sec]
+            dur = round(t1 - t0, 2) # duration [sec]
+            loc_x = np.mean(tr_v['x'][ind][ind2]) # location [µm]
+            loc_y = np.mean(tr_v['y'][ind][ind2]) # location [µm]
+            vel_x = np.mean(tr_v['v_x'][ind][ind2]) # velocity [µm/s]
+            vel_y = np.mean(tr_v['v_y'][ind][ind2]) # velocity [µm/s]
             vol = t_a * ramp_rate + vol_init # voltage, mutlplied by ramp rate [V]
-            mob = vel / (vol/l) * 1e-6 # mobility, [m2/s-V]
-            zet = mob * eta / (eps_r * eps_0) # zeta potential, [V]
-            tup = pd.DataFrame([[par, t_a, dur, vel, vol, mob, zet]], columns = colname)
+            mob = vel_y / (vol/l) * 1e-6 # mobility, [m2/s-V]
+            # zet = mob * eta / (eps_r * eps_0) # zeta potential, [V]
+            tup = pd.DataFrame([[par, t_a, dur, loc_x, loc_y, vel_x, vel_y, vol, mob]], columns = colname)
             tr_avg = pd.concat([tr_avg, tup], axis=0)
             # print('particle no.', i)
 

@@ -2,7 +2,7 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 """
-Last run on Feb 18 2022
+Last run on Mar 03 2022
 
 For LPS-DEP project. Updates --
 Oct 30: 1) file path, 2) noise reduction for bacterial cell tracking
@@ -12,6 +12,7 @@ Dec 11: Export trace dataframe for record. Increase the upper cutoff filtering v
 Dec 17: 1) updated module sub ("get_v" and "convert_tr")
         2) Hold back using kmeans clustering -- as the mobility computed too high than expected
 Feb 18: Bring code from "main_pt.py"
+Mar 03: Add XY location to dataframe tr. For strain CH7175 only.
 
 @author: Hyu Kim (hskimm@mit.edu)
 """
@@ -27,19 +28,19 @@ import trackpy as tp
 import time
 
 # %%
-exp_date = '2022-02-16'
-path_info = '/Users/hk/Desktop/LEMI/SFA/Electrokinetics/' + exp_date + ' bact ek/' + 'info_' + exp_date + '.txt'
-path_plot = '/Users/hk/Desktop/LEMI/SFA/Electrokinetics/' + exp_date + ' bact ek/'
-path_sav_vy = path_plot + 'vy/'
-path_sav_tr = path_plot + 'tr/'
+exp_date = '2021-12-09'
+path_info = '/Users/hk/Desktop/LEMI/DEP-LPS/Linear EK/' + 'info_' + exp_date + '.txt'
+path_plot = '/Users/hk/Desktop/LEMI/DEP-LPS/Linear EK/analysis/' + exp_date
+# path_sav_vy = path_plot + 'vy/'
+path_sav_tr = path_plot + '/tr/qw/'
 info = pd.read_csv(path_info, delimiter=',', header=0)
 
-path_tif = '/Volumes/LEMI_HK/LLNL BioSFA/EK/XXXX-XX-XX/tif_v2'
-for i in range(len(info)):
+path_tif = '/Volumes/LEMI_HK/LPS-DEP/XXXX-XX-XX/adjusted'
+for i in range(34, 54):
     print('iteration', i)
     
     path_tif = path_tif.replace('XXXX-XX-XX',info.date[i])
-    s = path_tif + '/' + '%s_R%d_Ch%02d_%s_%02dV_20X_001.tif' % (info.cond[i], info.rep[i], info.channel[i], info.light[i], info.voltage[i])
+    s = path_tif + '/' + '%s_R%d_Ch%02d_GFP_%02dV_20X_001.ome.tif' % (info.cond[i], info.rep[i], info.channel[i], info.voltage[i])
     frame = pims.open(s)
 
     t1 = time.time()
@@ -71,13 +72,9 @@ for i in range(len(info)):
 
     tr_av = sub.each_particle(tr_v3, vol_init=info.voltage[i])
 
-    mu, tr_av_vel = sub2.k_means(tr_av['velocity'])
+#     mu, tr_av_vel = sub2.k_means(tr_av['velocity'])
     # tr_av_vel = tr_av['velocity']
 
-    # %% Export tr_av and tr_av_vel to comma delimited text file
-    s = path_sav_vy + '%s_R%d_Ch%02d_%s_%02dV_20X_001.ome.csv' % (info.cond[i], info.rep[i], info.channel[i], info.light[i], info.voltage[i])
-    s2 = path_sav_tr + '%s_R%d_Ch%02d_%s_%02dV_20X_001.ome.csv' % (info.cond[i], info.rep[i], info.channel[i], info.light[i], info.voltage[i])
-
-    tr_sav = pd.DataFrame(data = tr_av_vel, columns=['velocity'])
-    tr_sav.to_csv(s, index = False)
+    ### Export tr_av and tr_av_vel to comma delimited text file
+    s2 = path_sav_tr + '%s_R%d_Ch%02d_GFP_%02dV_20X_001.ome.csv' % (info.cond[i], info.rep[i], info.channel[i], info.voltage[i])
     tr_av.to_csv(s2, index = False)
