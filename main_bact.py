@@ -2,7 +2,7 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 """
-Last run on Jan 05 2021
+Last run on Mar 03 2022
 
 For LPS-DEP project. Updates --
 Oct 30: 1) file path, 2) noise reduction for bacterial cell tracking
@@ -11,6 +11,7 @@ Dec 04: Use v_y instead of mobility for export
 Dec 11: Export trace dataframe for record. Increase the upper cutoff filtering velocity range
 Dec 17: 1) updated module sub ("get_v" and "convert_tr")
         2) Hold back using kmeans clustering -- as the mobility computed too high than expected
+Mar 03: Added XY location 
 
 @author: Hyu Kim (hskimm@mit.edu)
 """

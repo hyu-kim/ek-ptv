@@ -1,0 +1,26 @@
+{
+    "id": "DB28B54E",
+    "path": "~/Documents/GitHub/ek-ptv/R/lm.R",
+    "project_path": "lm.R",
+    "type": "r_source",
+    "hash": "3510886002",
+    "contents": "",
+    "dirty": false,
+    "created": 1644587441920.0,
+    "source_on_save": false,
+    "relative_order": 3,
+    "properties": {
+        "source_window_id": "",
+        "Source": "Source",
+        "cursorPosition": "27,8",
+        "scrollLine": "0"
+    },
+    "folds": "",
+    "lastKnownWriteTime": 1645192520,
+    "encoding": "UTF-8",
+    "collab_server": "",
+    "source_window": "",
+    "last_content_update": 1645192520666,
+    "read_only": false,
+    "read_only_alternatives": []
+}

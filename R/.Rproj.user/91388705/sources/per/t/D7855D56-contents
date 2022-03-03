@@ -1,0 +1,71 @@
+# Created by Hyungseok Kim (hskimm@mit.edu), last modified on 1/26/22
+# requires data ps.w in prior from "ms_ps.R"
+library("phyloseq")
+library("ggplot2")
+library("ape")
+library("jakR")
+library("tidyverse")
+library("Rmisc")
+
+# SUBSETTING...
+lyrs = c("B1","B3")
+l = 1
+rm(physeq_sub, sub_df, sub_df_SE, sub_m, sub_m_gen)
+physeq_sub = subset_samples(ps.w, DEVICE!='N' & LAYER=='B1' & (CONDITION==1 | CONDITION==2))
+physeq_sub = transform_sample_counts(physeq_sub, function(x) 100 * x / sum(x)) # normalize to scale 0-1
+
+# df stat
+sub_m <- physeq_sub;
+sub_m_gen = tax_glom(sub_m, "genus");
+sub_df = psmelt(sub_m_gen);
+sub_df_SE = summarySE(sub_df, measurevar = "Abundance", groupvars = c("genus", "LAYER", "CONDITION"))
+sub_df_SE$"CONDITION" <- as.character(sub_df_SE$"CONDITION")
+sub_df_SE$"LAYER" <- as.character(sub_df_SE$"LAYER")
+sub_df_SE$"CONDITION"[sub_df_SE$"CONDITION"=="1"]<- "Pt +"
+sub_df_SE$"CONDITION"[sub_df_SE$"CONDITION"=="2"]<- "Pt -"
+sub_df_SE$'LAYER'[sub_df_SE$'LAYER'=='B1'] <- 'Layer 1'
+sub_df_SE$'LAYER'[sub_df_SE$'LAYER'=='B3'] <- 'Layer 2'
+sub_df_SE$"type" <- row(sub_df_SE)[,1]>nrow(sub_df_SE)/2;
+sub_df_SE <- sub_df_SE[!(sub_df_SE$Abundance<=0.5),] # cutoff by %
+sub_df_SE <- filter(sub_df_SE, genus=='Marinobacter' | genus=='unclassified_Rhodobacteraceae' 
+                    | genus=='Oceanicaulis' | genus=='Algoriphagus' | genus=='unclassified_Sphingomonadaceae'
+                    | genus=='Altererythrobacter')
+sub_df_SE$'genus'[sub_df_SE$'genus'=='unclassified_Rhodobacteraceae'] <- 'uncl. Rhodobacteraceae'
+sub_df_SE$'genus'[sub_df_SE$'genus'=='unclassified_Sphingomonadaceae'] <- 'uncl. Sphingomonadaceae'
+
+# draw plot
+sub_df_SE %>%
+  arrange(Abundance) %>%
+  mutate(genus = factor(genus, levels = 
+                         c('Altererythrobacter', 'uncl. Sphingomonadaceae',
+                           'Algoriphagus','Oceanicaulis', 'uncl. Rhodobacteraceae','Marinobacter')
+                       )) %>%
+  ggplot(aes(x = genus, y = Abundance, fill = CONDITION)) + 
+  geom_bar(stat="identity", color="black", size=0.15,
+           position=position_dodge()) +
+  geom_errorbar(aes(ymin = Abundance-sd, ymax = Abundance+sd), width=.2, size=0.15,
+                position=position_dodge(.9)) + 
+  scale_fill_manual(values=c("#A6C062","#319986")) +
+  coord_flip() + 
+  # ylim(NA, 45) +
+  scale_y_continuous(expand = c(0,0), limits = c(0, 50)) +
+  theme(text = element_text(size=10),
+        title =element_text(size=11, face='bold'),
+        legend.position = "none", 
+        axis.text.y = element_blank(),
+        axis.text.x = element_blank(),
+        axis.title.y  = element_blank(),
+        axis.title.x  = element_blank(),
+        axis.ticks.y = element_blank(),
+        axis.ticks.x = element_line(colour = "black", size = 0.25),
+        strip.background = element_rect(fill=NA),
+        strip.text = element_blank(),
+        panel.background = element_rect(fill = "transparent"),
+        panel.grid.major = element_blank(), 
+        panel.grid.minor = element_blank(),
+        plot.background = element_rect(fill = "transparent", color = NA),
+        panel.border = element_rect(colour = "black", fill=NA, size=0.2))
+  # labs(x="Genus", y = "Mean relative abundance (%)")
+
+setwd("/Users/hyungseokkim/Desktop/LEMI/SFA/Conference/2022-02 GSP/img+data")
+ggsave(sprintf("PM_relabd_L.eps",l), width = 2.0, height = 2.0, units = "in")

@@ -1,0 +1,37 @@
+# Created by Hyungseok Kim (hskimm@mit.edu), last modified on 1/26/22
+# Continued from create_df.R
+library("ggplot2")
+library(tidyverse)
+
+# subset df by each treatment
+trt = 'Ax'
+ph = phs[1]
+df_p <- df[(df$Treatment==trt)&(df$pH==ph),]
+df_p$"Voltage" <- as.factor(df_p$"Voltage")
+df_p$"Replicate" <- as.factor(df_p$"Replicate")
+
+# create a boxplot, grouped by voltage
+ggplot(df_p, aes(x=Voltage, y=Velocity)) + 
+  # geom_boxplot(lwd=0.1) +
+  geom_jitter(color="royalblue", size=0.15, width=0.3) +
+  # geom_point(position=position_jitterdodge())
+  labs(x="Voltage (V)", y = "Velocity (µm/s)") +
+  theme(text = element_text(size=10),
+        title =element_text(size=11, face='bold'),
+        legend.position = "none", 
+        # axis.text.y = element_blank(),
+        # axis.text.x = element_blank(),
+        axis.title.y  = element_blank(),
+        axis.title.x  = element_blank(),
+        axis.ticks.y = element_line(colour = "black", size = 0.25),
+        axis.ticks.x = element_line(colour = "black", size = 0.25),
+        strip.background = element_rect(fill=NA),
+        strip.text = element_blank(),
+        panel.background = element_rect(fill = "transparent"),
+        panel.grid.major = element_line(colour = "black", size = 0.1),
+        panel.grid.minor = element_blank(),
+        plot.background = element_rect(fill = "transparent", color = NA),
+        panel.border = element_rect(colour = "black", fill=NA, size=0.2))
+
+setwd("/Users/hyungseokkim/Desktop/LEMI/SFA/Conference/2022-02 GSP/img+data")
+ggsave(paste("ek_stat",".eps", sep=""), width = 3, height = 2.2, units = "in")
