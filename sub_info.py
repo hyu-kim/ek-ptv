@@ -46,7 +46,7 @@ def str2df(s, date):
     })
     return df
 
-def create_info(exp_date='2022-02-16', path='/Volumes/LEMI_HK/LLNL BioSFA/EK/', path_out='/Users/hk/Desktop/LEMI/SFA/Electrokinetics/2022-02-16 back ek/'):
+def create_info(exp_date='2022-02-16', path='/Volumes/LEMI_HK/LLNL BioSFA/EK/', path_out='/Users/hk/Desktop/LEMI/SFA/Electrokinetics/2022-02-16 bact ek/'):
     """
     Reads a list of files in a directory and creates a draft 'info.txt'
     format as '[treatment]_[replicate]_[channel]_[fluorescence]_[voltage]_[magnification]_[run_no].ome.tif'
