@@ -4,7 +4,7 @@
 """
 Last run on Feb 18 2022
 
-For LPS-DEP project. Updates --
+For LLNL-EK project (git branch = "amp"). Updates --
 Oct 30: 1) file path, 2) noise reduction for bacterial cell tracking
 Nov 30: Added a cell that reads a list of files in directory to create 'info.txt'
 Dec 04: Use v_y instead of mobility for export
