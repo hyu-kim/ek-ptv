@@ -33,7 +33,7 @@ def str2df(s, date):
             j2 = i
         i = i+1
     v = l[4][:-1] 
-    if int(v) <= 10: # voltage in range(0,30)
+    if int(v) <= 30: # voltage in range(0,30)
         f = 10 # fps
         b = 350 # frame size by default
     else: # voltage between 15 and 25
@@ -46,7 +46,7 @@ def str2df(s, date):
     })
     return df
 
-def create_info(exp_date='2022-02-16', path='/Volumes/LEMI_HK/LLNL BioSFA/EK/', path_out='/Users/hk/Desktop/LEMI/SFA/Electrokinetics/2022-02-16 bact ek/'):
+def create_info(exp_date='2022-03-17', path='/Volumes/LEMI_HK/LPS-DEP/', path_out='/Users/hk/Desktop/LEMI/DEP-LPS/Linear EK/'):
     """
     Reads a list of files in a directory and creates a draft 'info.txt'
     format as '[treatment]_[replicate]_[channel]_[fluorescence]_[voltage]_[magnification]_[run_no].ome.tif'
