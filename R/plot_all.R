@@ -16,9 +16,12 @@ mu_df2 %>%
              aes(colour=Channel)) +
   scale_color_manual(values=c("#FF0000", "#00FF0C", "#0812F7", "#B32222", "#06920D", "#0D7DA7", "#EE7230", "#81EF86", "#95DEEC")) +
   # geom_point(stroke = 0.2, size = 1, pch = 21, position = position_jitterdodge(0.3)) +
-  labs(x='Bacterial strain', y=expression(paste('Mobility (','- 10'^{-9}, ' m'^2,'/ V-s)')))
+  labs(x='Bacterial strain', y=expression(paste('Mobility (','- 10'^{-9}, ' m'^2,'/ V-s)'))) +
+  theme(panel.background = element_rect(fill = "transparent"),
+        plot.background = element_rect(fill = "transparent", color = NA),
+        panel.border = element_rect(colour = "black", fill=NA, size=0.15))
 
-ggsave('mobility.eps', width = 5, height = 4, units = "in")
+ggsave('mobility.eps', width = 3.5, height = 3.5, units = "in")
 
 ### add a column with a date
 mu_df$date <- date
