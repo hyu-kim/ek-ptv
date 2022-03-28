@@ -29,25 +29,25 @@ import trackpy as tp
 import time
 
 # %%
-exp_date = '2021-11-10'
+exp_date = '2022-03-22'
 path_info = '/Users/hk/Desktop/LEMI/DEP-LPS/Linear EK/' + 'info_' + exp_date + '.txt'
 path_plot = '/Users/hk/Desktop/LEMI/DEP-LPS/Linear EK/analysis/' + exp_date
 path_sav_vy2 = path_plot + '/vy2/'
-# path_sav_tr = path_plot + '/tr/'
+path_sav_tr = path_plot + '/tr/'
 info = pd.read_csv(path_info, delimiter=',', header=0)
 
 path_tif = '/Volumes/LEMI_HK/LPS-DEP/XXXX-XX-XX/adjusted'
-for i in range(len(info)):
+for i in range(20,30):
     print('iteration', i)
     
     path_tif = path_tif.replace('XXXX-XX-XX',info.date[i])
-    s = path_tif + '/' + '%s_R%d_Ch%02d_GFP_%02dV_10X_001.ome_v2.tif' % (info.cond[i], info.rep[i], info.channel[i], info.voltage[i])
+    s = path_tif + '/' + '%s_R%d_Ch%02d_GFP_%02dV_10X_001.ome.tif' % (info.cond[i], info.rep[i], info.channel[i], info.voltage[i])
     frame = pims.open(s)
 
     t1 = time.time()
     mid = (info.front[i] + info.back[i])//2
     b, cnt = sub.binarize(frame[mid])
-    cnt = cnt * ((cnt>=10) & (cnt<=200)) + 10 * ((cnt<10) | (cnt>200))
+    cnt = cnt * ((cnt>=10) & (cnt<=200)) + 100 * ((cnt<10) | (cnt>200))
     frame2, _ = sub.binarize_batch(frame) # for validating tp.annotate
 
     f = pile(frame[1:], topn=cnt*2//3) # exclude the first frame it has been subtracted to remove background
@@ -78,7 +78,7 @@ for i in range(len(info)):
 
     ### Export tr_av and tr_av_vel to comma delimited text file
     s = path_sav_vy2 + '%s_R%d_Ch%02d_GFP_%02dV_10X_001.csv' % (info.cond[i], info.rep[i], info.channel[i], info.voltage[i])
-#     s2 = path_sav_tr + '%s_R%d_Ch%02d_GFP_%02dV_10X_001.csv' % (info.cond[i], info.rep[i], info.channel[i], info.voltage[i])
-    tr_vy = pd.DataFrame(data = tr_av.loc[:,['x','v_y']], columns=['velocity'])
+    s2 = path_sav_tr + '%s_R%d_Ch%02d_GFP_%02dV_10X_001.csv' % (info.cond[i], info.rep[i], info.channel[i], info.voltage[i])
+    tr_vy = pd.DataFrame(data = tr_av.loc[:,['x','v_y']], columns=['x','v_y'])
     tr_vy.to_csv(s, index = False)
-#     tr_av.to_csv(s2, index = False)
+    tr_av.to_csv(s2, index = False)
