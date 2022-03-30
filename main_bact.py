@@ -2,7 +2,7 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 """
-Last run on Mar 09 2022
+Last run on Mar 29 2022
 
 For LPS-DEP project. Updates --
 Oct 30: 1) file path, 2) noise reduction for bacterial cell tracking
@@ -29,7 +29,7 @@ import trackpy as tp
 import time
 
 # %%
-exp_date = '2022-03-22'
+exp_date = '2022-03-28'
 path_info = '/Users/hk/Desktop/LEMI/DEP-LPS/Linear EK/' + 'info_' + exp_date + '.txt'
 path_plot = '/Users/hk/Desktop/LEMI/DEP-LPS/Linear EK/analysis/' + exp_date
 path_sav_vy2 = path_plot + '/vy2/'
@@ -37,7 +37,7 @@ path_sav_tr = path_plot + '/tr/'
 info = pd.read_csv(path_info, delimiter=',', header=0)
 
 path_tif = '/Volumes/LEMI_HK/LPS-DEP/XXXX-XX-XX/adjusted'
-for i in range(20,30):
+for i in len(info):
     print('iteration', i)
     
     path_tif = path_tif.replace('XXXX-XX-XX',info.date[i])
@@ -47,10 +47,10 @@ for i in range(20,30):
     t1 = time.time()
     mid = (info.front[i] + info.back[i])//2
     b, cnt = sub.binarize(frame[mid])
-    cnt = cnt * ((cnt>=10) & (cnt<=200)) + 100 * ((cnt<10) | (cnt>200))
+    cnt = cnt * ((cnt>=10) & (cnt<=100)) + 100 * ((cnt<10) | (cnt>100))
     frame2, _ = sub.binarize_batch(frame) # for validating tp.annotate
 
-    f = pile(frame[1:], topn=cnt*2//3) # exclude the first frame it has been subtracted to remove background
+    f = pile(frame[1:], topn=cnt) # exclude the first frame it has been subtracted to remove background
     # f = pile(frame[1:], topn=5) # use this when cell number is too low (i.e. wrong cnt)
     # tp.annotate(f[100], frame2[100]) # run this to check if cells were properly detected
 
@@ -65,11 +65,11 @@ for i in range(20,30):
     t2 = time.time()
     print("elapsed : %s sec" % (t2-t1))
 
-    tr_v2 = sub.filter_v(tr_v, xlim=10, ylim1=info.voltage[i], ylim2=-10, direction=True)
+    tr_v2 = sub.filter_v(tr_v, xlim=5, ylim1=info.voltage[i], ylim2=-5, direction=True)
     sub.plot_tr_v(tr_v2)
 
     info = pd.read_csv(path_info, delimiter=',', header=0) # update info
-    tr_v3 = sub.convert_tr(tr_v2, front=info.front[i], back=info.back[i], rate_time=1/info.fps[i], rate_space=1.95) # mag 10x, binned 3 by 3
+    tr_v3 = sub.convert_tr(tr_v2, front=info.front[i], back=info.back[i], rate_time=1/info.fps[i], rate_space=1.288) # mag 10x, binned 2 by 2
 
     tr_av = sub.each_particle(tr_v3, vol_init=info.voltage[i])
 
