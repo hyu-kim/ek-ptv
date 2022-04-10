@@ -29,7 +29,7 @@ import trackpy as tp
 import time
 
 # %%
-exp_date = '2022-03-28'
+exp_date = '2022-03-17'
 path_info = '/Users/hk/Desktop/LEMI/DEP-LPS/Linear EK/' + 'info_' + exp_date + '.txt'
 path_plot = '/Users/hk/Desktop/LEMI/DEP-LPS/Linear EK/analysis/' + exp_date
 path_sav_vy2 = path_plot + '/vy2/'
@@ -37,11 +37,11 @@ path_sav_tr = path_plot + '/tr/'
 info = pd.read_csv(path_info, delimiter=',', header=0)
 
 path_tif = '/Volumes/LEMI_HK/LPS-DEP/XXXX-XX-XX/adjusted'
-for i in len(info):
+for i in range(17,20):
     print('iteration', i)
     
     path_tif = path_tif.replace('XXXX-XX-XX',info.date[i])
-    s = path_tif + '/' + '%s_R%d_Ch%02d_GFP_%02dV_10X_001.ome.tif' % (info.cond[i], info.rep[i], info.channel[i], info.voltage[i])
+    s = path_tif + '/' + '%s_R%d_Ch%02d_GFP_%02dV_20X_001.ome.tif' % (info.cond[i], info.rep[i], info.channel[i], info.voltage[i])
     frame = pims.open(s)
 
     t1 = time.time()
@@ -51,7 +51,6 @@ for i in len(info):
     frame2, _ = sub.binarize_batch(frame) # for validating tp.annotate
 
     f = pile(frame[1:], topn=cnt) # exclude the first frame it has been subtracted to remove background
-    # f = pile(frame[1:], topn=5) # use this when cell number is too low (i.e. wrong cnt)
     # tp.annotate(f[100], frame2[100]) # run this to check if cells were properly detected
 
     pred = tp.predict.NearestVelocityPredict()
@@ -69,7 +68,7 @@ for i in len(info):
     sub.plot_tr_v(tr_v2)
 
     info = pd.read_csv(path_info, delimiter=',', header=0) # update info
-    tr_v3 = sub.convert_tr(tr_v2, front=info.front[i], back=info.back[i], rate_time=1/info.fps[i], rate_space=1.288) # mag 10x, binned 2 by 2
+    tr_v3 = sub.convert_tr(tr_v2, front=info.front[i], back=info.back[i], rate_time=1/info.fps[i], rate_space=1) # mag 20x, binned 3 by 3
 
     tr_av = sub.each_particle(tr_v3, vol_init=info.voltage[i])
 
