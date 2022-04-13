@@ -5,16 +5,16 @@ library("ggplot2")
 library(tidyverse)
 library(Rmisc)
 
-mu_df2 <- mu_df[!(mu_df$Channel=='16'),]
+# mu_df2 <- mu_df[!(mu_df$Channel=='16'),]
 
-mu_df2 %>%
+mu_df %>%
   mutate(Strain = factor(Strain, levels=trts)) %>%
   mutate(Channel = factor(Channel, levels=chls)) %>%
   ggplot(aes(x=Strain, y=Mobility * 1e9)) + 
   geom_bar(stat = "summary", fun = mean, size = 0.2, width = 0.75, fill=NA, colour='black') +
-  geom_point(size = 2, position = position_jitterdodge(0.1),
-             aes(colour=Channel)) +
-  scale_color_manual(values=c("#FF0000", "#00FF0C", "#0812F7", "#B32222", "#06920D", "#0D7DA7", "#EE7230", "#81EF86", "#95DEEC")) +
+  geom_point(size = 1, position = position_jitterdodge(0.1),
+             aes(colour=Replicate)) +
+  # scale_color_manual(values=c("#FF0000", "#00FF0C", "#0812F7", "#B32222", "#06920D", "#0D7DA7", "#EE7230", "#81EF86", "#95DEEC")) +
   # geom_point(stroke = 0.2, size = 1, pch = 21, position = position_jitterdodge(0.3)) +
   labs(x='Bacterial strain', y=expression(paste('Mobility (','- 10'^{-9}, ' m'^2,'/ V-s)'))) +
   theme(panel.background = element_rect(fill = "transparent"),

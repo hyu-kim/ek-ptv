@@ -6,7 +6,7 @@ library(tidyverse)
 rm(list=ls())
 
 ## import and clean
-date = '2022-02-16'
+date = '2022-04-06'
 path <- paste("/Users/hk/Desktop/LEMI/SFA/Electrokinetics/", date, " bact ek", sep="")
 setwd(path)
 filename = paste("info_",date,".txt",sep="")
@@ -16,7 +16,7 @@ setwd(paste(path,"vy",sep="/"))
 df = data.frame(Treatment=factor(), Replicate=factor(), Voltage=double(), Channel=factor(), Velocity=double()) # use only when beginning from scratch
 for (ind in c(1:dim(rd_info)[1])) {
   # if (rd_info$'channel'[ind]>14) next # consider QW#1 device only this time
-  str = sprintf("%s_R%d_Ch%02d_%s_%02dV_20X_001.ome.csv", rd_info$'cond'[ind], 
+  str = sprintf("%s_R%d_Ch%02d_%s_%02dV_10X_001.ome.csv", rd_info$'cond'[ind], 
                 rd_info$'rep'[ind], rd_info$'channel'[ind],
                 rd_info$'light'[ind], rd_info$'voltage'[ind])
   rd = read.delim(str, header=TRUE, dec = ".")
