@@ -27,15 +27,15 @@ import trackpy as tp
 import time
 
 # %%
-exp_date = '2022-04-06'
-path_info = '/Users/hk/Desktop/LEMI/SFA/Electrokinetics/' + exp_date + ' bact ek/' + 'info_' + exp_date + '.txt'
-path_plot = '/Users/hk/Desktop/LEMI/SFA/Electrokinetics/' + exp_date + ' bact ek/'
+exp_date = '2022-04-25'
+path_info = '/Users/hk/Desktop/LEMI/SFA/Electrokinetics/' + exp_date + ' bact_spent/' + 'info_' + exp_date + '.txt'
+path_plot = '/Users/hk/Desktop/LEMI/SFA/Electrokinetics/' + exp_date + ' bact_spent/'
 path_sav_vy = path_plot + 'vy/'
 path_sav_tr = path_plot + 'tr/'
 info = pd.read_csv(path_info, delimiter=',', header=0)
 
 path_tif = '/Volumes/LEMI_HK/LLNL BioSFA/EK/XXXX-XX-XX/tif_v2'
-for i in range(30,60):
+for i in range(45):
     print('iteration', i)
     
     path_tif = path_tif.replace('XXXX-XX-XX',info.date[i])
@@ -67,7 +67,7 @@ for i in range(30,60):
     sub.plot_tr_v(tr_v2)
 
     info = pd.read_csv(path_info, delimiter=',', header=0) # update info
-    tr_v3 = sub.convert_tr(tr_v2, front=info.front[i], back=info.back[i], rate_time=1/info.fps[i], rate_space=1.29) # mag 10x, binned 2 by 2
+    tr_v3 = sub.convert_tr(tr_v2, front=info.front[i], back=info.back[i], rate_time=1/info.fps[i], rate_space=1.93) # mag 10x, binned 3 by 3
 
     tr_av = sub.each_particle(tr_v3, vol_init=info.voltage[i])
 
